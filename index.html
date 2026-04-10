@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FlavorFusion • Кулинарное сообщество</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/index_style/index.css">
+</head>
+<body>
+
+    <!-- ======================== ХЕДЕР (статическая часть) ======================== -->
+    <!-- Нейросеть должна обеспечить работу:
+         - Кнопка #menuToggle открывает .mobile-menu (добавляет класс active).
+         - Кнопка #closeMenu закрывает меню.
+         - При клике на ссылку в мобильном меню оно закрывается.
+         - При нажатии Escape меню закрывается.
+         - Аватар пользователя ведёт на страницу profile.html.
+    -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils logo-icon"></i>
+                    <span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span>
+                </a>
+                <nav class="nav">
+                    <div class="nav__menu">
+                        <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
+                        <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>  <!-- При нажатии на кнопку "Избранное" пользователя перебрасывает на свой профиль с открытым разделом ( class="tab-btn" data-tab="activity" )-->
+                        <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
+                        <a href="add-recipe.html" class="nav__link cta-button"><i class="fas fa-plus-circle"></i><span>Добавить рецепт</span></a>
+                    </div>
+                    <a href="profile.html">
+                        <div class="user-menu">
+
+                        <div class="user-avatar" id="userAvatar">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
+                        </div>
+                    </div>
+                    </a>
+                </nav>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================== HERO СЕКЦИЯ (поиск и быстрые теги) ======================== -->
+    <!-- 
+        ПОЛЕ ПОИСКА:
+        - Элемент #mainSearch – ввод текста. Нейросеть должна фильтровать рецепты по полю "название", "ингредиенты", "теги".
+        - Кнопка .search-btn и клавиша Enter должны запускать поиск.
+        - Быстрые теги .quick-tags .tag – при клике заполняют поле поиска и запускают фильтрацию.
+    -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero__content">
+                <div class="hero__text">
+                    <h1 class="hero__title">
+                        <span class="hero__title-line">Откройте мир</span>
+                        <span class="hero__title-line highlight no-underline">вкусовых ощущений</span>
+                    </h1>
+                    <p class="hero__subtitle">Более 5000 проверенных рецептов от шеф-поваров и домашних кулинаров</p>
+                    <div class="hero__search">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Ищите рецепты, ингредиенты, категории..." id="mainSearch">
+                            <button class="search-btn" id="searchBtn"><i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        <div class="quick-tags">
+                            <span class="tag" data-search="паста">🍕 Паста</span>
+                            <span class="tag" data-search="салаты">🥗 Салаты</span>
+                            <span class="tag" data-search="десерты">🍰 Десерты</span>
+                            <span class="tag" data-search="мясо">🥩 Мясо</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero__image">
+                    <div class="floating-card card-1">
+                        <img src="images/спагети.jpg" alt="паста">
+                        <span class="card-badge">🔥 Популярное</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <img src="images/салат лого.webp" alt="Завтрак">
+                        <span class="card-badge">👨‍🍳 Шеф-рецепт</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== КАТЕГОРИИ ======================== -->
+    <!-- 
+        КАРТОЧКИ КАТЕГОРИЙ:
+        - Каждая карточка имеет атрибут data-category (breakfast, lunch, dinner, dessert, baking, healthy).
+        - При клике на карточку должны фильтроваться рецепты в блоке (class="recipes-grid" id="recipesContainer" )по соответствующей категории (например, "Завтрак").
+        
+    -->
+    <section class="categories" id="categories">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Категории рецептов</h2>
+            <div class="categories-accordion-trigger">
+                <p class="section-subtitle">Выберите то, что вам по вкусу</p>
+                <i class="fas fa-chevron-down accordion-arrow"></i>
+            </div>
+        </div>
+        <div class="categories-grid-wrapper">
+            <div class="categories-grid">
+                <div class="category-card" data-category="breakfast"><div class="category-icon"><i class="fas fa-coffee"></i></div><h3>Завтраки</h3><p>156 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="lunch"><div class="category-icon"><i class="fas fa-utensils"></i></div><h3>Основные блюда</h3><p>423 рецепта</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="dinner"><div class="category-icon"><i class="fas fa-moon"></i></div><h3>Ужины</h3><p>289 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="dessert"><div class="category-icon"><i class="fas fa-ice-cream"></i></div><h3>Десерты</h3><p>198 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="baking"><div class="category-icon"><i class="fas fa-bread-slice"></i></div><h3>Выпечка</h3><p>167 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="healthy"><div class="category-icon"><i class="fas fa-heart"></i></div><h3>Здоровое питание</h3><p>234 рецепта</p><div class="category-bg"></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+    
+
+    <!-- ======================== ПОПУЛЯРНЫЕ РЕЦЕПТЫ (список карточек) ======================== -->
+    <!-- 
+        ФИЛЬТРЫ ПО ВРЕМЕНИ:
+        - Кнопки .filter-btn (Все, Сегодня, Неделя, Месяц).
+        - Активная кнопка имеет класс .active.
+        - При клике необходимо фильтровать рецепты по дате создания:
+           
+        - КОНТЕЙНЕР ДЛЯ КАРТОЧЕК: #recipesContainer.
+        - Нейросеть должна при загрузке страницы получить список рецептов (из API / localStorage) и отобразить их в этом контейнере.
+        - Каждая карточка рецепта должна генерироваться динамически по шаблону .recipe-card (стили уже есть).
+        - При клике на карточку (кроме кнопок внутри) открывать страницу recipe-detail.html?id=...
+        - Кнопка #loadMore – пагинация: подгружать следующую порцию рецептов (по 6 штук).
+    -->
+    <section class="featured-recipes">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Популярные рецепты</h2>
+                <div class="section-controls">
+                    <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="today">Сегодня</button>
+                    <button class="filter-btn" data-filter="week">Неделя</button>
+                    <button class="filter-btn" data-filter="month">Месяц</button>
+                </div>
+            </div>
+            <!-- КОНТЕЙНЕР ДЛЯ КАРТОЧЕК РЕЦЕПТОВ (динамическое наполнение) -->
+            <div class="recipes-grid" id="recipesContainer">
+                <!-- Сюда будут загружены карточки рецептов -->
+            </div>
+            <div class="view-more">
+                <button class="btn-outline" id="loadMore"><i class="fas fa-redo"></i> Загрузить еще</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== СТАТИСТИКА (статические данные, можно оставить как есть) ======================== -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-utensils stat-icon"></i><div class="stat-content"><h3 class="stat-number">5,248</h3><p class="stat-text">Рецептов</p></div></div>
+                <div class="stat-card"><i class="fas fa-users stat-icon"></i><div class="stat-content"><h3 class="stat-number">12,847</h3><p class="stat-text">Кулинаров</p></div></div>
+                <div class="stat-card"><i class="fas fa-star stat-icon"></i><div class="stat-content"><h3 class="stat-number">28,956</h3><p class="stat-text">Оценок</p></div></div>
+                <div class="stat-card"><i class="fas fa-comments stat-icon"></i><div class="stat-content"><h3 class="stat-number">4,732</h3><p class="stat-text">Комментариев</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== ФУТЕР (статический) ======================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+                    <p class="footer__description">Сообщество кулинаров, где каждый может поделиться своими рецептами и найти вдохновение.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer__links">
+                    <div class="footer__column"><h4>Рецепты</h4><a href="#">Завтраки</a><a href="#">Обеды</a><a href="#">Ужины</a><a href="#">Десерты</a></div>
+                    <div class="footer__column"><h4>Сообщество</h4><a href="profile.html">Профиль</a><a href="#">Шеф-повара</a><a href="#">Блоги</a><a href="#">Форумы</a></div>
+                    <div class="footer__column"><h4>Помощь</h4><a href="#">FAQ</a><a href="#">Контакты</a><a href="#">Правила</a><a href="#">Поддержка</a></div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2024 FlavorFusion. Все права защищены.</p>
+                <div class="footer__legal"><a href="#">Политика конфиденциальности</a><a href="#">Условия использования</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================== МОБИЛЬНОЕ МЕНЮ (бургер) ======================== -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu__header">
+            <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+            <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-menu__content">
+            <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
+            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
+            <a href="add-recipe.html" class="mobile-menu__link"><i class="fas fa-plus-circle"></i> Добавить рецепт</a>
+            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- ======================== ЗДЕСЬ НЕ ДОЛЖНО БЫТЬ ЛОГИКИ ======================== -->
+    <!-- Весь JavaScript, связанный с загрузкой рецептов, рендерингом карточек, поиском, фильтрацией,
+         пагинацией, мобильным меню и кнопкой "наверх", должна написать нейросеть,
+         ориентируясь на комментарии выше. -->
+         <script>
+    // Мобильное меню
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-menu__link');
+
+    function openMobileMenu() {
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden'; // блокируем прокрутку фона
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', openMobileMenu);
+    }
+    if (closeMenu) {
+        closeMenu.addEventListener('click', closeMobileMenu);
+    }
+    // Закрываем при клике на любую ссылку в меню
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+    // Закрываем по клавише Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
+
+
+
+// АККОРДЕОН КАТЕГОРИЙ (только мобильные)
+(function() {
+    const trigger = document.querySelector('.categories-accordion-trigger');
+    const wrapper = document.querySelector('.categories-grid-wrapper');
+    if (!trigger || !wrapper) return;
+
+    function toggleAccordion(e) {
+        // Работает только на мобилках
+        if (window.innerWidth > 768) return;
+        e.stopPropagation();
+        trigger.classList.toggle('active');
+        wrapper.classList.toggle('open');
+    }
+
+    function resetAccordion() {
+        if (window.innerWidth > 768) {
+            // На десктопе убираем классы, делаем сетку видимой
+            trigger.classList.remove('active');
+            wrapper.classList.remove('open');
+            // Убеждаемся, что max-height не ограничен
+            wrapper.style.maxHeight = '';
+        } else {
+            // На мобилках: если нет класса open, то сворачиваем (по умолчанию свёрнуто)
+            if (!wrapper.classList.contains('open')) {
+                wrapper.classList.remove('open');
+                trigger.classList.remove('active');
+            }
+        }
+    }
+
+    // Вешаем событие
+    trigger.addEventListener('click', toggleAccordion);
+    // При изменении размера окна
+    window.addEventListener('resize', resetAccordion);
+    // При загрузке
+    window.addEventListener('load', resetAccordion);
+    // Также запустим сразу, если страница загружена
+    resetAccordion();
+})();
+
+// Запускаем при загрузке и при изменении размера окна
+window.addEventListener('load', updateCategoriesAccordion);
+window.addEventListener('resize', updateCategoriesAccordion);
+</script>   
+</html>

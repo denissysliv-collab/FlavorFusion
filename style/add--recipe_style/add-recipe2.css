@@ -1,0 +1,453 @@
+
+        /* ===== СТИЛИ ДЛЯ ФОРМЫ ДОБАВЛЕНИЯ РЕЦЕПТА ===== */
+.form-section {
+    padding: 120px 0 60px;
+    background: var(--light-color);
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    color: var(--dark-color);
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    color: var(--gray-color);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--dark-color);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.form-label span {
+    color: var(--primary-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    color: var(--dark-color);
+    transition: all var(--transition-normal);
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--gray-color);
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Ингредиенты (динамические поля) */
+.ingredients-container {
+    margin-top: 15px;
+}
+
+.ingredient-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.ingredient-item .form-control {
+    flex: 1;
+}
+
+.remove-ingredient {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--light-gray);
+    border: none;
+    color: var(--gray-color);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-ingredient:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.add-ingredient-btn {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-normal);
+    font-size: 0.95rem;
+}
+
+.add-ingredient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Предпросмотр изображения */
+.image-preview {
+    margin-top: 15px;
+}
+
+.image-preview img {
+    max-width: 280px;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+/* Карточка пищевой ценности */
+.section-card {
+    background: var(--light-color);
+    border-radius: var(--radius-lg);
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.section-card h3 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.3rem;
+}
+
+.section-card h3 i {
+    color: var(--primary-color);
+}
+
+/* Кнопки формы */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn-lg {
+    padding: 16px 32px;
+    font-size: 1.125rem;
+}
+
+/* Вспомогательный текст */
+.form-help {
+    font-size: 0.85rem;
+    color: var(--gray-color);
+    margin-top: 5px;
+}
+
+.form-actions .btn-outline {
+    background: transparent !important;
+    border: none !important;
+    color: red !important;
+    box-shadow: none !important;
+    padding: 8px 16px !important;
+    font-weight: 400 !important;
+}
+
+.form-actions .btn-outline:hover {
+    background: transparent !important;
+    color: var(--danger-color) !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ===== АДАПТИВНОСТЬ ДЛЯ ФОРМЫ ===== */
+@media (max-width: 768px) {
+    .form-section {
+        padding-top: 100px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-card {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .section-card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 400px) {
+    .form-card {
+        padding: 15px;
+    }
+}
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ (исправленная) ===== */
+@media (max-width: 768px) {
+    .container { padding: 0 15px; }
+    .header__content { padding: 8px 0; }
+    .nav__menu { display: none; }
+    .menu-toggle { display: flex; }
+    .mobile-menu { width: 100%; }
+    .footer__links { grid-template-columns: repeat(2, 1fr); gap: 25px; }
+    .footer__bottom { flex-direction: column; text-align: center; gap: 12px; }
+
+    /* Улучшения формы */
+    .form-section { padding-top: 100px; }
+    .form-card { padding: 20px !important; }
+    .form-group { margin-bottom: 16px; }
+    .form-header { margin-bottom: 20px; }
+    .form-header h2 { font-size: 1.5rem; margin-bottom: 5px; }
+    .form-header p { font-size: 0.9rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .section-card { padding: 15px; margin-bottom: 20px; }
+    .section-card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    
+    /* Пищевая ценность: всегда 2 колонки на мобильных */
+    .section-card .form-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .ingredient-item { margin-bottom: 8px; }
+    .ingredient-item .form-control { padding: 8px 12px; }
+    .remove-ingredient { width: 36px; height: 36px; }
+    .add-ingredient-btn { padding: 8px 16px; font-size: 0.85rem; }
+    .form-actions { margin-top: 20px; gap: 10px; }
+    .btn-lg { padding: 12px 20px; font-size: 1rem; }
+    .form-control { padding: 10px 12px; font-size: 0.9rem; }
+    .form-help { font-size: 0.75rem; margin-top: 3px; }
+}
+
+@media (max-width: 576px) {
+    .form-card { padding: 15px !important; }
+    /* Оставляем 2 колонки для пищевой ценности */
+    .section-card .form-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .section-card { padding: 12px; }
+    .btn-lg { padding: 10px 16px; font-size: 0.95rem; }
+    .footer__links { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 400px) {
+    .container { padding: 0 12px; }
+    .form-card { padding: 12px !important; }
+    .section-card .form-row {
+        gap: 6px;
+    }
+}
+
+
+
+
+
+
+
+/* ===== КАСТОМНЫЙ СЕЛЕКТ ДЛЯ КАТЕГОРИЙ ===== */
+.custom-select {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.custom-select-trigger {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    background: white;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    color: var(--dark-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--transition-normal);
+}
+.custom-select-trigger:hover {
+    border-color: var(--primary-color);
+}
+.custom-select-trigger .selected-value {
+    flex: 1;
+    text-align: left;
+}
+.custom-select-trigger .arrow {
+    transition: transform 0.3s;
+}
+.custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+}
+.custom-select-dropdown.show {
+    display: block;
+}
+.custom-select-option {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background var(--transition-normal);
+    font-size: 0.95rem;
+}
+.custom-select-option:hover {
+    background: var(--light-color);
+}
+.custom-select-option i, 
+.custom-select-option .emoji-icon {
+    width: 28px;
+    font-size: 1.2rem;
+}
+.custom-select-option.selected {
+    background: rgba(255, 107, 107, 0.1);
+    color: var(--primary-color);
+}
+.custom-select-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    margin-top: 8px;
+    background: white;
+}
+.custom-select-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+
+
+/* Кастомный селект для сложности */
+.custom-select-small {
+    position: relative;
+    width: 100%;
+}
+.custom-select-small .custom-select-trigger {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    background: white;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    color: var(--dark-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.custom-select-small .custom-select-trigger:hover {
+    border-color: var(--primary-color);
+}
+.custom-select-small .custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    display: none;
+}
+.custom-select-small .custom-select-dropdown.show {
+    display: block;
+}
+.custom-select-small .custom-select-option {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background var(--transition-normal);
+}
+.custom-select-small .custom-select-option:hover {
+    background: var(--light-color);
+}
+.custom-select-small .custom-select-option.selected {
+    background: rgba(255, 107, 107, 0.1);
+    color: var(--primary-color);
+}
+.custom-select-small .arrow {
+    transition: transform 0.3s;
+}
+    

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FlavorFusion • Кулинарное сообщество</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/add--recipe_style/add-recipe1.css">
+     <link rel="stylesheet" href="style/add--recipe_style/add-recipe2.css">
+     
+   
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils logo-icon"></i>
+                    <span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span>
+                </a>
+                <nav class="nav">
+
+                    
+                    <div class="nav__menu">
+                        <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
+                        <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>
+                        <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
+                        
+                    </div>
+                    <div class="user-menu">
+
+                        <div class="user-avatar" id="userAvatar">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
+                        </div>
+                    </div>
+                </nav>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+   <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2>Поделитесь своим рецептом</h2>
+                        <p>Помогите другим открыть новые вкусы и вдохновиться кулинарными экспериментами</p>
+                    </div>
+                    <form id="recipeForm">
+                        <div class="form-group">
+                            <label for="title" class="form-label"><span>*</span> Название рецепта</label>
+                            <input type="text" id="title" class="form-control" placeholder="Введите название вашего рецепта" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageUrl" class="form-label">Ссылка на изображение</label>
+                            <input type="url" id="imageUrl" class="form-control" placeholder="Вставьте ссылку на фотографию вашего блюда">
+                            <p class="form-help">Вы можете загрузить изображение на сервисы вроде Imgur и вставить ссылку</p>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="form-label"><span>*</span> Краткое описание</label>
+                            <textarea id="description" class="form-control" placeholder="Опишите ваш рецепт в нескольких предложениях" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullDescription" class="form-label">Подробное описание</label>
+                            <textarea id="fullDescription" class="form-control" placeholder="Расскажите историю рецепта, поделитесь секретами приготовления" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span>*</span> Ингредиенты</label>
+                            <div id="ingredientsContainer"></div>
+                            <button type="button" id="addIngredient" class="add-ingredient-btn"><i class="fas fa-plus"></i> Добавить ингредиент</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="instructions" class="form-label"><span>*</span> Инструкция приготовления</label>
+                            <textarea id="instructions" class="form-control" placeholder="Опишите каждый шаг приготовления с новой строки" rows="6" required></textarea>
+                            <p class="form-help">Каждый шаг начинайте с новой строки</p>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="time" class="form-label"><span>*</span> Время приготовления</label>
+                                <input type="text" id="time" class="form-control" placeholder="Например: 30 минут" required>
+                            </div>
+                            <div class="form-group">
+   
+                        </div>
+                       
+                     
+    <div class="form-group">
+        <label class="form-label"><span>*</span> Категория</label>
+        <!-- Кастомный выпадающий список с иконками-эмодзи -->
+        <div class="custom-select" id="categorySelect">
+            <div class="custom-select-trigger">
+                <span class="selected-value">Выберите категорию</span>
+                <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="custom-select-dropdown">
+                <div class="custom-select-option" data-value="🍝 Основные блюда">
+                    <span class="emoji-icon">🍝</span> Основные блюда
+                </div>
+                <div class="custom-select-option" data-value="🥗 Салаты">
+                    <span class="emoji-icon">🥗</span> Салаты
+                </div>
+                <div class="custom-select-option" data-value="🍲 Супы">
+                    <span class="emoji-icon">🍲</span> Супы     
+                </div>
+                <div class="custom-select-option" data-value="🍳 Завтрак">
+                    <span class="emoji-icon">🍳</span> Завтрак
+                </div>
+                <div class="custom-select-option" data-value="🍽️ Обед">
+                    <span class="emoji-icon">🍽️</span> Обед
+                </div>
+                <div class="custom-select-option" data-value="🌙 Ужин">
+                    <span class="emoji-icon">🌙</span> Ужин
+                </div>
+                <div class="custom-select-option" data-value="🍰 Десерт">
+                    <span class="emoji-icon">🍰</span> Десерт
+                </div>
+                <div class="custom-select-option" data-value="🥖 Выпечка">
+                    <span class="emoji-icon">🥖</span> Выпечка
+                </div>
+                <div class="custom-select-option" data-value="🌿 Здоровое питание">
+                    <span class="emoji-icon">🌿</span> Здоровое питание
+                </div>
+                <div class="custom-select-option" data-value="🍢 Закуски">
+                    <span class="emoji-icon">🍢</span> Закуски
+                </div>
+                <div class="custom-select-option" data-value="🥤 Напитки">
+                    <span class="emoji-icon">🥤</span> Напитки
+                </div>
+            </div>
+        </div>
+        <input type="text" id="customCategory" class="custom-select-input" placeholder="Или введите свою категорию (с эмодзи или без)">
+        <input type="hidden" id="category" name="category">
+    </div>
+    <div class="form-group">
+        <label for="servings" class="form-label">Количество порций</label>
+        <input type="number" id="servings" class="form-control" min="1" max="20" value="4">
+    </div>
+</div>
+                        <div class="section-card">
+                            <h3><i class="fas fa-chart-bar"></i> Пищевая ценность (на порцию)</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calories" class="form-label">Калории</label>
+                                    <input type="text" id="calories" class="form-control" placeholder="ккал">
+                                </div>
+                                <div class="form-group">
+                                    <label for="protein" class="form-label">Белки</label>
+                                    <input type="text" id="protein" class="form-control" placeholder="г">
+                                </div>
+                                <div class="form-group">
+                                    <label for="carbs" class="form-label">Углеводы</label>
+                                    <input type="text" id="carbs" class="form-control" placeholder="г">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fat" class="form-label">Жиры</label>
+                                    <input type="text" id="fat" class="form-control" placeholder="г">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane"></i> Опубликовать рецепт</button>
+                            <button type="button" class="btn btn-outline" onclick="window.history.back()"><i class="fas fa-times"></i> Отмена</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ======================== ФУТЕР (статический) ======================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+                    <p class="footer__description">Сообщество кулинаров, где каждый может поделиться своими рецептами и найти вдохновение.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer__links">
+                    <div class="footer__column"><h4>Рецепты</h4><a href="#">Завтраки</a><a href="#">Обеды</a><a href="#">Ужины</a><a href="#">Десерты</a></div>
+                    <div class="footer__column"><h4>Сообщество</h4><a href="profile.html">Профиль</a><a href="#">Шеф-повара</a><a href="#">Блоги</a><a href="#">Форумы</a></div>
+                    <div class="footer__column"><h4>Помощь</h4><a href="#">FAQ</a><a href="#">Контакты</a><a href="#">Правила</a><a href="#">Поддержка</a></div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2024 FlavorFusion. Все права защищены.</p>
+                <div class="footer__legal"><a href="#">Политика конфиденциальности</a><a href="#">Условия использования</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================== МОБИЛЬНОЕ МЕНЮ (бургер) ======================== -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu__header">
+            <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+            <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-menu__content">
+            <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
+            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
+            
+            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- ======================== ЗДЕСЬ НЕ ДОЛЖНО БЫТЬ ЛОГИКИ ======================== -->
+    <!-- Весь JavaScript, связанный с загрузкой рецептов, рендерингом карточек, поиском, фильтрацией,
+         пагинацией, мобильным меню и кнопкой "наверх", должна написать нейросеть,
+         ориентируясь на комментарии выше. -->
+        <script>
+        // ========== МОБИЛЬНОЕ МЕНЮ ==========
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu__link');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (menuToggle) menuToggle.addEventListener('click', openMobileMenu);
+        if (closeMenu) closeMenu.addEventListener('click', closeMobileMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) closeMobileMenu();
+        });
+
+        // ========== КНОПКА "НАВЕРХ" ==========
+        const backToTop = document.getElementById('backToTop');
+        if (backToTop) {
+            window.addEventListener('scroll', function() {
+                backToTop.classList.toggle('visible', window.pageYOffset > 300);
+            });
+            backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        // ========== УПРАВЛЕНИЕ ИНГРЕДИЕНТАМИ ==========
+        const ingredientsContainer = document.getElementById('ingredientsContainer');
+        const addIngredientBtn = document.getElementById('addIngredient');
+
+        function createIngredientItem(value = '') {
+            const div = document.createElement('div');
+            div.className = 'ingredient-item';
+            div.innerHTML = `
+                <input type="text" class="form-control" placeholder="Например: 500 г куриного филе" value="${value.replace(/"/g, '&quot;')}">
+                <button type="button" class="remove-ingredient"><i class="fas fa-trash-alt"></i></button>
+            `;
+            div.querySelector('.remove-ingredient').addEventListener('click', () => div.remove());
+            return div;
+        }
+
+        if (addIngredientBtn) {
+            addIngredientBtn.addEventListener('click', () => {
+                ingredientsContainer.appendChild(createIngredientItem());
+            });
+        }
+        // Стартовое пустое поле
+        if (ingredientsContainer && ingredientsContainer.children.length === 0) {
+            ingredientsContainer.appendChild(createIngredientItem());
+        }
+
+        // ========== ПРЕДПРОСМОТР ИЗОБРАЖЕНИЯ ==========
+        const imageUrlInput = document.getElementById('imageUrl');
+        const imagePreview = document.getElementById('imagePreview');
+        if (imageUrlInput && imagePreview) {
+            imageUrlInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                    imagePreview.innerHTML = `<img src="${url}" alt="Предпросмотр">`;
+                } else {
+                    imagePreview.innerHTML = '';
+                }
+            });
+        }
+
+        // ========== ОТПРАВКА ФОРМЫ (СОХРАНЕНИЕ В localStorage) ==========
+        const recipeForm = document.getElementById('recipeForm');
+        if (recipeForm) {
+            recipeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Сбор ингредиентов
+                const ingredients = [];
+                document.querySelectorAll('#ingredientsContainer .ingredient-item input').forEach(input => {
+                    if (input.value.trim()) ingredients.push(input.value.trim());
+                });
+
+                const recipeData = {
+                    id: Date.now(),
+                    title: document.getElementById('title').value.trim(),
+                    description: document.getElementById('description').value.trim(),
+                    fullDescription: document.getElementById('fullDescription').value.trim(),
+                    ingredients: ingredients,
+                    instructions: document.getElementById('instructions').value.trim(),
+                    time: document.getElementById('time').value.trim(),
+                    difficulty: document.getElementById('difficulty').value,
+                    category: document.getElementById('category').value,
+                    servings: document.getElementById('servings').value,
+                    imageUrl: document.getElementById('imageUrl').value.trim(),
+                    tags: document.getElementById('tags').value.trim(),
+                    notes: document.getElementById('notes').value.trim(),
+                    calories: document.getElementById('calories').value.trim(),
+                    protein: document.getElementById('protein').value.trim(),
+                    carbs: document.getElementById('carbs').value.trim(),
+                    fat: document.getElementById('fat').value.trim(),
+                    createdAt: new Date().toISOString()
+                };
+
+                // Валидация
+                if (!recipeData.title || !recipeData.description || ingredients.length === 0 || !recipeData.instructions || !recipeData.time || !recipeData.difficulty || !recipeData.category) {
+                    alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой *)');
+                    return;
+                }
+
+                // Сохраняем
+                let recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
+                recipes.unshift(recipeData);
+                localStorage.setItem('flavorfusion_recipes', JSON.stringify(recipes));
+
+                alert('Рецепт успешно опубликован!');
+                recipeForm.reset();
+                ingredientsContainer.innerHTML = '';
+                ingredientsContainer.appendChild(createIngredientItem());
+                imagePreview.innerHTML = '';
+            });
+        }
+
+        // Аватар -> профиль
+        const userAvatar = document.getElementById('userAvatar');
+        if (userAvatar) {
+            userAvatar.addEventListener('click', () => window.location.href = 'profile.html');
+        }
+
+
+
+        // ========== КАСТОМНЫЙ СЕЛЕКТ КАТЕГОРИИ ==========
+(function() {
+    const customSelect = document.getElementById('categorySelect');
+    if (!customSelect) return;
+    
+    const trigger = customSelect.querySelector('.custom-select-trigger');
+    const dropdown = customSelect.querySelector('.custom-select-dropdown');
+    const options = customSelect.querySelectorAll('.custom-select-option');
+    const selectedValueSpan = trigger.querySelector('.selected-value');
+    const hiddenInput = document.getElementById('category');
+    const customCategoryInput = document.getElementById('customCategory');
+
+    // Открыть/закрыть список
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+        const arrow = trigger.querySelector('.arrow');
+        arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : '';
+    });
+
+    // Выбор опции
+    options.forEach(opt => {
+        opt.addEventListener('click', () => {
+            const value = opt.dataset.value; // полная строка с эмодзи и текстом
+            const text = opt.innerText.trim(); // текст без эмодзи (если нужно)
+            selectedValueSpan.textContent = value; // показываем с эмодзи
+            hiddenInput.value = value;           // сохраняем полную строку с эмодзи
+            customCategoryInput.value = '';      // очищаем своё поле
+            dropdown.classList.remove('show');
+            const arrow = trigger.querySelector('.arrow');
+            arrow.style.transform = '';
+            // Убираем выделение со всех опций
+            options.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        });
+    });
+
+    // Если пользователь вводит свою категорию
+    customCategoryInput.addEventListener('input', () => {
+        const val = customCategoryInput.value.trim();
+        if (val) {
+            hiddenInput.value = val;
+            selectedValueSpan.textContent = val;
+            // Снимаем выделение с опций
+            options.forEach(o => o.classList.remove('selected'));
+        } else {
+            // Если поле пустое, сбрасываем выбор
+            hiddenInput.value = '';
+            selectedValueSpan.textContent = 'Выберите категорию';
+        }
+    });
+
+    // Закрывать список при клике вне
+    document.addEventListener('click', (e) => {
+        if (!customSelect.contains(e.target)) {
+            dropdown.classList.remove('show');
+            const arrow = trigger.querySelector('.arrow');
+            arrow.style.transform = '';
+        }
+    });
+})();
+
+
+// ========== КАСТОМНЫЙ СЕЛЕКТ СЛОЖНОСТИ ==========
+(function() {
+    const select = document.getElementById('difficultySelect');
+    if (!select) return;
+    
+    const trigger = select.querySelector('.custom-select-trigger');
+    const dropdown = select.querySelector('.custom-select-dropdown');
+    const options = select.querySelectorAll('.custom-select-option');
+    const selectedSpan = trigger.querySelector('.selected-value');
+    const hiddenInput = document.getElementById('difficulty');
+
+    // Открытие/закрытие
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('show');
+        const arrow = trigger.querySelector('.arrow');
+        arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : '';
+    });
+
+    // Выбор опции
+    options.forEach(opt => {
+        opt.addEventListener('click', () => {
+            const value = opt.dataset.value; // например "🟢 Лёгкая"
+            selectedSpan.textContent = value;
+            hiddenInput.value = value;
+            dropdown.classList.remove('show');
+            const arrow = trigger.querySelector('.arrow');
+            arrow.style.transform = '';
+            // Убираем выделение
+            options.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        });
+    });
+
+    // Закрытие при клике вне
+    document.addEventListener('click', (e) => {
+        if (!select.contains(e.target)) {
+            dropdown.classList.remove('show');
+            const arrow = trigger.querySelector('.arrow');
+            arrow.style.transform = '';
+        }
+    });
+})();
+    </script> 
+</html>

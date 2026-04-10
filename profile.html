@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FlavorFusion • Кулинарное сообщество</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/profile/profil.css">
+</head>
+<body>
+
+   
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils logo-icon"></i>
+                    <span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span>
+                </a>
+                <nav class="nav">
+                    <div class="nav__menu">
+                        <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
+                        <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>
+                        <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
+                        <a href="add-recipe.html" class="nav__link cta-button"><i class="fas fa-plus-circle"></i><span>Добавить рецепт</span></a>
+                    </div>
+                    <a href="profile.html">
+                        <div class="user-menu">
+
+                        <div class="user-avatar" id="userAvatar">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
+                        </div>
+                    </div>
+                    </a>
+                </nav>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+   <main class="main-content">
+  <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-avatar-large">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpZz39un6LiWZygWCEv1d9c3Fa4yL48dcKLg&s" alt="User" id="profileAvatar">
+                        <button class="btn-avatar-edit" onclick="editAvatar()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name" id="profileName">Мария Иванова</h1>
+                        <p class="profile-bio" id="profileBio">Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.</p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <strong id="recipesCount">12</strong>
+                                <span>Рецептов</span>
+                            </div>
+                            <div class="profile-stat">
+                                <strong id="favoritesCount">24</strong>
+                                <span>Избранных</span>
+                            </div>
+                            <div class="profile-stat">
+                                <strong id="likesCount">156</strong>
+                                <span>Лайков</span>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-primary" onclick="editProfile()">
+                                <i class="fas fa-edit"></i> Редактировать профиль
+                            </button>
+                            <button class="btn btn-outline" onclick="shareProfile()">
+                                <i class="fas fa-share-alt"></i> Поделиться
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Tabs -->
+                <div class="profile-tabs">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="my-recipes">
+                            <i class="fas fa-utensils"></i> Мои рецепты
+                        </button>
+                        <button class="tab-btn" data-tab="favorites">
+                            <i class="fas fa-heart"></i> Избранное
+                        </button>
+                        <button class="tab-btn" data-tab="activity">
+                            <i class="fas fa-chart-line"></i> Активность
+                        </button>
+                        <button class="tab-btn" data-tab="settings">
+                            <i class="fas fa-cog"></i> Настройки
+                        </button>
+                    </div>
+
+                    <!-- My Recipes Tab -->
+                    <div class="tab-content active" id="my-recipes">
+                        <div class="tab-header">
+                            <h3>Мои рецепты</h3>
+                            <a href="add-recipe.html" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Добавить рецепт
+                            </a>
+                        </div>
+                        <div class="recipes-grid" id="myRecipesList">
+                            <!-- Рецепты пользователя будут здесь -->
+                        </div>
+                        <div class="empty-state" id="myRecipesEmpty" style="display: none;">
+                            <i class="fas fa-utensils"></i>
+                            <h4>У вас еще нет рецептов</h4>
+                            <p>Создайте свой первый рецепт и поделитесь им с сообществом!</p>
+                            <a href="add-recipe.html" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Добавить рецепт
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Favorites Tab -->
+                    <div class="tab-content" id="favorites">
+                        <div class="tab-header">
+                            <h3>Избранные рецепты</h3>
+                        </div>
+                        <div class="recipes-grid" id="favoritesList">
+                            <!-- Избранные рецепты будут здесь -->
+                        </div>
+                        <div class="empty-state" id="favoritesEmpty" style="display: none;">
+                            <i class="fas fa-heart"></i>
+                            <h4>Нет избранных рецептов</h4>
+                            <p>Добавляйте понравившиеся рецепты в избранное, чтобы они появились здесь</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity Tab -->
+                    <div class="tab-content" id="activity">
+                        <div class="tab-header">
+                            <h3>Моя активность</h3>
+                        </div>
+                        <div class="activity-list">
+                            <!-- Активность будет здесь -->
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Вам понравился рецепт <strong>"Паста Карбонара"</strong></p>
+                                    <span class="activity-time">2 часа назад</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Вы оставили комментарий к рецепту <strong>"Авокадо-тост"</strong></p>
+                                    <span class="activity-time">Вчера</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p>Вы добавили рецепт <strong>"Тирамису"</strong></p>
+                                    <span class="activity-time">3 дня назад</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-content" id="settings">
+                        <div class="tab-header">
+                            <h3>Настройки профиля</h3>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Имя</label>
+                                <input type="text" class="form-control" value="Мария Иванова">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="maria@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">О себе</label>
+                                <textarea class="form-control" rows="4">Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Уведомления</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">  
+                                        <input type="checkbox" checked>
+                                        <span>Новые комментарии к моим рецептам</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" checked>
+                                        <span>Лайки на моих рецептах</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox">
+                                        <span>Новые рецепты от избранных авторов</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" onclick="saveSettings()">
+                                    <i class="fas fa-save"></i> Сохранить изменения
+                                </button>
+                                <button class="btn btn-outline" onclick="resetSettings()">
+                                    <i class="fas fa-redo"></i> Сбросить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+   </main>
+    
+
+
+    
+    <!-- ======================== ФУТЕР (статический) ======================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+                    <p class="footer__description">Сообщество кулинаров, где каждый может поделиться своими рецептами и найти вдохновение.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer__links">
+                    <div class="footer__column"><h4>Рецепты</h4><a href="#">Завтраки</a><a href="#">Обеды</a><a href="#">Ужины</a><a href="#">Десерты</a></div>
+                    <div class="footer__column"><h4>Сообщество</h4><a href="profile.html">Профиль</a><a href="#">Шеф-повара</a><a href="#">Блоги</a><a href="#">Форумы</a></div>
+                    <div class="footer__column"><h4>Помощь</h4><a href="#">FAQ</a><a href="#">Контакты</a><a href="#">Правила</a><a href="#">Поддержка</a></div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2024 FlavorFusion. Все права защищены.</p>
+                <div class="footer__legal"><a href="#">Политика конфиденциальности</a><a href="#">Условия использования</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!--======================== МОБИЛЬНОЕ МЕНЮ (бургер) ======================== -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu__header">
+            <a href="index.html" class="logo"><i class="fas fa-utensils logo-icon"></i><span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span></a>
+            <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-menu__content">
+            <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
+            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
+            <a href="add-recipe.html" class="mobile-menu__link"><i class="fas fa-plus-circle"></i> Добавить рецепт</a>
+            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- ======================== ЗДЕСЬ НЕ ДОЛЖНО БЫТЬ ЛОГИКИ ======================== -->
+    <!-- Весь JavaScript, связанный с загрузкой рецептов, рендерингом карточек, поиском, фильтрацией,
+         пагинацией, мобильным меню и кнопкой "наверх", должна написать нейросеть,
+         ориентируясь на комментарии выше. -->
+         <script>
+    // Мобильное меню
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-menu__link');
+
+    function openMobileMenu() {
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden'; // блокируем прокрутку фона
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', openMobileMenu);
+    }
+    if (closeMenu) {
+        closeMenu.addEventListener('click', closeMobileMenu);
+    }
+    // Закрываем при клике на любую ссылку в меню
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+    // Закрываем по клавише Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
+
+
+
+// АККОРДЕОН КАТЕГОРИЙ (только мобильные)
+(function() {
+    const trigger = document.querySelector('.categories-accordion-trigger');
+    const wrapper = document.querySelector('.categories-grid-wrapper');
+    if (!trigger || !wrapper) return;
+
+    function toggleAccordion(e) {
+        // Работает только на мобилках
+        if (window.innerWidth > 768) return;
+        e.stopPropagation();
+        trigger.classList.toggle('active');
+        wrapper.classList.toggle('open');
+    }
+
+    function resetAccordion() {
+        if (window.innerWidth > 768) {
+            // На десктопе убираем классы, делаем сетку видимой
+            trigger.classList.remove('active');
+            wrapper.classList.remove('open');
+            // Убеждаемся, что max-height не ограничен
+            wrapper.style.maxHeight = '';
+        } else {
+            // На мобилках: если нет класса open, то сворачиваем (по умолчанию свёрнуто)
+            if (!wrapper.classList.contains('open')) {
+                wrapper.classList.remove('open');
+                trigger.classList.remove('active');
+            }
+        }
+    }
+
+    // Вешаем событие
+    trigger.addEventListener('click', toggleAccordion);
+    // При изменении размера окна
+    window.addEventListener('resize', resetAccordion);
+    // При загрузке
+    window.addEventListener('load', resetAccordion);
+    // Также запустим сразу, если страница загружена
+    resetAccordion();
+})();
+
+// Запускаем при загрузке и при изменении размера окна
+window.addEventListener('load', updateCategoriesAccordion);
+window.addEventListener('resize', updateCategoriesAccordion);
+
+
+
+
+
+// ========== ИНИЦИАЛИЗАЦИЯ СТРАНИЦЫ ==========
+document.addEventListener('DOMContentLoaded', function() {
+    initProfilePage();
+});
+
+function initProfilePage() {
+    initMobileMenu();
+    initBackToTop();
+    loadProfileData();
+    initProfileTabs();
+    loadUserRecipes();
+    loadFavorites();
+}
+
+// ========== МОБИЛЬНОЕ МЕНЮ ==========
+function initMobileMenu() {
+    const menuToggle = document.getElementById('menuToggle');
+    const closeMenu = document.getElementById('closeMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (!menuToggle || !mobileMenu) return;
+    
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    if (closeMenu) {
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+    
+    mobileMenu.addEventListener('click', (e) => {
+        if (e.target === mobileMenu) {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// ========== КНОПКА "НАВЕРХ" ==========
+function initBackToTop() {
+    const backToTop = document.getElementById('backToTop');
+    if (!backToTop) return;
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+    
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ========== ПЕРЕКЛЮЧЕНИЕ ТАБОВ ==========
+function initProfileTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab;
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+}
+
+// ========== ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ ==========
+function loadProfileData() {
+    const user = JSON.parse(localStorage.getItem('currentUser')) || {
+        name: 'Мария Иванова',
+        bio: 'Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.',
+        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face'
+    };
+    
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileBio').textContent = user.bio;
+    document.getElementById('profileAvatar').src = user.avatar;
+    
+    const headerAvatar = document.getElementById('headerAvatar');
+    if (headerAvatar) headerAvatar.src = user.avatar;
+}
+
+// ========== ЗАГРУЗКА РЕЦЕПТОВ ПОЛЬЗОВАТЕЛЯ ==========
+function loadUserRecipes() {
+    const recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1 };
+    
+    const userRecipes = recipes.filter(recipe => recipe.author?.id === currentUser.id);
+    const container = document.getElementById('myRecipesList');
+    const emptyState = document.getElementById('myRecipesEmpty');
+    
+    document.getElementById('recipesCount').textContent = userRecipes.length;
+    
+    if (userRecipes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+    userRecipes.forEach(recipe => {
+        container.appendChild(createRecipeCard(recipe));
+    });
+}
+
+// ========== ЗАГРУЗКА ИЗБРАННЫХ РЕЦЕПТОВ ==========
+function loadFavorites() {
+    const recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { favorites: [] };
+    
+    const favoriteRecipes = recipes.filter(recipe => 
+        currentUser.favorites && currentUser.favorites.includes(recipe.id)
+    );
+    
+    const container = document.getElementById('favoritesList');
+    const emptyState = document.getElementById('favoritesEmpty');
+    
+    document.getElementById('favoritesCount').textContent = favoriteRecipes.length;
+    
+    if (favoriteRecipes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+    favoriteRecipes.forEach(recipe => {
+        container.appendChild(createRecipeCard(recipe));
+    });
+}
+
+// ========== СОЗДАНИЕ КАРТОЧКИ РЕЦЕПТА ==========
+function createRecipeCard(recipe) {
+    const div = document.createElement('div');
+    div.className = 'recipe-card';
+    div.dataset.id = recipe.id;
+    
+    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1, favorites: [] };
+    const isFavorite = currentUser.favorites && currentUser.favorites.includes(recipe.id);
+    
+    div.innerHTML = `
+        <div class="recipe-image">
+            <img src="${recipe.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop'}" alt="${recipe.title}">
+            <span class="recipe-badge">${recipe.category || 'Рецепт'}</span>
+            <div class="recipe-actions">
+                <button class="btn-action btn-favorite ${isFavorite ? 'active' : ''}" data-id="${recipe.id}" onclick="toggleFavorite(${recipe.id})">
+                    <i class="fas fa-heart"></i>
+                </button>
+                ${recipe.author?.id === currentUser.id ? `
+                <button class="btn-action btn-edit" onclick="editRecipe(${recipe.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                ` : ''}
+            </div>
+        </div>
+        <div class="recipe-content">
+            <div class="recipe-header">
+                <h3 class="recipe-title">${escapeHtml(recipe.title)}</h3>
+                <div class="recipe-rating">
+                    <i class="fas fa-star"></i>
+                    <span>${recipe.rating || '4.5'}</span>
+                </div>
+            </div>
+            <p class="recipe-description">${escapeHtml(recipe.description)}</p>
+            <div class="recipe-meta">
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>${recipe.time || '30 мин'}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-fire"></i>
+                    <span>${recipe.difficulty || 'Средняя'}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    div.addEventListener('click', (e) => {
+        if (!e.target.closest('.recipe-actions')) {
+            window.location.href = `recipe-detail.html?id=${recipe.id}`;
+        }
+    });
+    
+    return div;
+}
+
+// ========== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ЗАЩИТЫ ОТ XSS ==========
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// ========== ДОБАВЛЕНИЕ/УДАЛЕНИЕ ИЗ ИЗБРАННОГО ==========
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1, favorites: [] };
+
+window.toggleFavorite = function(recipeId) {
+    const index = currentUser.favorites.indexOf(recipeId);
+    if (index === -1) {
+        currentUser.favorites.push(recipeId);
+        alert('Добавлено в избранное!');
+    } else {
+        currentUser.favorites.splice(index, 1);
+        alert('Удалено из избранного!');
+    }
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    // Обновляем отображение, если текущая вкладка — избранное
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab && activeTab.dataset.tab === 'favorites') {
+        loadFavorites();
+    }
+    // Обновляем счётчик избранного
+    document.getElementById('favoritesCount').textContent = currentUser.favorites.length;
+};
+
+// ========== РЕДАКТИРОВАНИЕ РЕЦЕПТА ==========
+window.editRecipe = function(id) {
+    window.location.href = `edit-recipe.html?id=${id}`;
+};
+
+// ========== РЕДАКТИРОВАНИЕ АВАТАРА ==========
+window.editAvatar = function() {
+    alert('Функция изменения аватара будет реализована в будущем обновлении!');
+};
+
+// ========== ПЕРЕХОД К НАСТРОЙКАМ ==========
+window.editProfile = function() {
+    const settingsBtn = document.querySelector('.tab-btn[data-tab="settings"]');
+    if (settingsBtn) settingsBtn.click();
+};
+
+// ========== ПОДЕЛИТЬСЯ ПРОФИЛЕМ ==========
+window.shareProfile = function() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Мой профиль на FlavorFusion',
+            text: 'Посмотрите мой профиль на FlavorFusion!',
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => alert('Ссылка на профиль скопирована!'))
+            .catch(() => alert('Скопируйте ссылку: ' + window.location.href));
+    }
+};
+
+// ========== СОХРАНЕНИЕ НАСТРОЕК ==========
+window.saveSettings = function() {
+    const name = document.querySelector('.settings-form input[type="text"]').value.trim();
+    const bio = document.querySelector('.settings-form textarea').value.trim();
+    
+    if (!name) {
+        alert('Имя не может быть пустым');
+        return;
+    }
+    
+    const user = JSON.parse(localStorage.getItem('currentUser')) || {};
+    user.name = name;
+    user.bio = bio; 
+    
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    
+    // Обновляем отображение профиля
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileBio').textContent = bio;
+    
+    alert('Настройки сохранены!');
+};
+
+// ========== СБРОС НАСТРОЕК ==========
+window.resetSettings = function() {
+    if (confirm('Вы уверены, что хотите сбросить настройки к значениям по умолчанию?')) {
+        document.querySelector('.settings-form input[type="text"]').value = 'Мария Иванова';
+        document.querySelector('.settings-form input[type="email"]').value = 'maria@example.com';
+        document.querySelector('.settings-form textarea').value = 'Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.';
+    }
+};
+</script>   
+</html>

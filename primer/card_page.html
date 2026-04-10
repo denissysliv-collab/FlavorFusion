@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демо карточки рецепта</title>
+    <!-- Подключаем шрифты и иконки -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== ВСЕ СТИЛИ ДЛЯ КАРТОЧКИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F9F9F9;
+            font-family: 'Poppins', sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Переменные (те же, что в проекте) */
+        :root {
+            --primary-color: #FF6B6B;
+            --primary-dark: #FF5252;
+            --primary-light: #FF9A9A;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFD166;
+            --dark-color: #2D3436;
+            --light-color: #F9F9F9;
+            --gray-color: #636E72;
+            --light-gray: #DFE6E9;
+            --success-color: #00B894;
+            --warning-color: #FDCB6E;
+            --danger-color: #D63031;
+            --gradient-primary: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-circle: 50%;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Playfair Display', serif;
+        }
+
+        /* Карточка */
+        .recipe-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+            width: 320px;
+            max-width: 100%;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .recipe-image {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+
+        .recipe-card:hover .recipe-image img {
+            transform: scale(1.1);
+        }
+
+        .recipe-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: white;
+            color: var(--dark-color);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .recipe-title {
+            font-size: 1.15rem;
+            font-family: var(--font-secondary);
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .recipe-author {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .author-avatar-small {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-circle);
+            overflow: hidden;
+        }
+
+        .author-avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recipe-author span {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .recipe-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .recipe-rating i {
+            color: var(--accent-color);
+        }
+
+        .recipe-rating span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .recipe-description {
+            color: var(--gray-color);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-color);
+            font-size: 0.85rem;
+        }
+
+        .meta-item i {
+            color: var(--primary-color);
+        }
+
+        /* Действия при наведении (кнопки сердечко и глаз) */
+        .recipe-actions {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .recipe-card:hover .recipe-actions {
+            opacity: 1;
+        }
+
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-circle);
+            background: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            color: var(--dark-color);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .btn-action.btn-favorite.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Адаптив для мобильных */
+        @media (max-width: 768px) {
+            .recipe-actions {
+                opacity: 1 !important;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 5px;
+                border-radius: var(--radius-md);
+            }
+            .btn-action {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Пример карточки рецепта (один экземпляр) -->
+    <div class="recipe-card fade-in">
+        <div class="recipe-image">
+            <img src="https://img.iamcook.ru/old/upl/recipes/zen/u6009-8e00fe26949a37ddf403c897f0081cf6.jpg" alt="Паста Карбонара">
+            <span class="recipe-badge">🍝 Основные блюда</span>
+            <div class="recipe-actions">
+                <button class="btn-action btn-favorite" title="В избранное">
+                    <i class="fas fa-heart"></i>
+                </button>
+                    
+            </div>
+        </div>
+        <div class="recipe-content">
+            <div class="recipe-header">
+                <div>
+                    <h3 class="recipe-title">Паста Карбонара</h3>
+                    <div class="recipe-author">
+                        <div class="author-avatar-small">
+                            <img src="https://img.iamcook.ru/old/upl/recipes/zen/u6009-8e00fe26949a37ddf403c897f0081cf6.jpg" alt="Автор">
+                        </div>
+                        <span>Мария Иванова</span>
+                    </div>
+                </div>
+                <div class="recipe-rating">
+                    <i class="fas fa-star"></i>
+                    <span>4.8</span>
+                </div>
+            </div>
+            <p class="recipe-description">
+                Классическая итальянская паста с хрустящим беконом и сливочн    ым соусом. Просто и невероятно вкусно!
+            </p>
+            <div class="recipe-meta">
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>25 мин</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-fire"></i>
+                    <span>Средняя</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>4 порции</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Можно добавить пояснение -->
+    <div style="position: fixed; bottom: 20px; left: 20px; background: white; padding: 8px 16px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 12px;">
+        Карточка рецепта (recipe-card) с hover-эффектами
+    </div>
+</body>
+</html>
