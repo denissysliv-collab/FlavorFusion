@@ -21,20 +21,32 @@
                     <span class="logo-text">Flavor<span class="logo-highlight">Fusion</span></span>
                 </a>
                 <nav class="nav">
-
-                    
                     <div class="nav__menu">
-                        <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
+                        <a href="index.html" class="nav__link"><i class="fas fa-home"></i><span>Главная</span></a>
                         <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>
                         <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
-                        
                     </div>
-                    <div class="user-menu">
 
-                        <div class="user-avatar" id="userAvatar">
-                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
+                    <!-- Гость: Войти / Регистрация -->
+                    <a href="registration/login.html" id="login-link" class="nav__link auth-hidden">
+                        <i class="fas fa-sign-in-alt"></i><span>Войти</span>
+                    </a>
+                    <a href="registration/register.html" id="register-link" class="nav__link auth-hidden">
+                        <i class="fas fa-user-plus"></i><span>Регистрация</span>
+                    </a>
+
+                    <!-- Авторизован: Аватар + Имя + Выйти -->
+                    <a href="profile.html" id="nav-avatar-link" class="auth-hidden">
+                        <div class="user-menu">
+                            <div class="user-avatar">
+                                <img src="" alt="User" id="nav-avatar">
+                            </div>
+                            <span id="nav-username"></span>
                         </div>
-                    </div>
+                    </a>
+                    <button id="desktop-logout-btn" class="nav__link auth-hidden" style="border:none;background:none;cursor:pointer;font-family:var(--font-primary);font-size:0.95rem;color:var(--gray-color);" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i><span>Выйти</span>
+                    </button>
                 </nav>
                 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
@@ -55,10 +67,36 @@
                             <input type="text" id="title" class="form-control" placeholder="Введите название вашего рецепта" required>
                         </div>
                         <div class="form-group">
-                            <label for="imageUrl" class="form-label">Ссылка на изображение</label>
-                            <input type="url" id="imageUrl" class="form-control" placeholder="Вставьте ссылку на фотографию вашего блюда">
-                            <p class="form-help">Вы можете загрузить изображение на сервисы вроде Imgur и вставить ссылку</p>
-                            <div id="imagePreview" class="image-preview"></div>
+                            <label for="imageUrl" class="form-label">Изображение рецепта</label>
+
+                            <!-- Переключатель способа -->
+                            <div class="image-method-toggle" style="display:flex;gap:10px;margin-bottom:12px;">
+                                <button type="button" class="image-method-btn active" id="imgLinkBtn" onclick="switchImageMethod('link')">
+                                    <i class="fas fa-link"></i> По ссылке
+                                </button>
+                                <button type="button" class="image-method-btn" id="imgFileBtn" onclick="switchImageMethod('file')">
+                                    <i class="fas fa-upload"></i> Загрузить файл
+                                </button>
+                            </div>
+
+                            <!-- Способ 1: ссылка -->
+                            <div id="imgLinkSection">
+                                <input type="url" id="imageUrl" class="form-control" placeholder="https://example.com/photo.jpg">
+                            </div>
+
+                            <!-- Способ 2: файл -->
+                            <div id="imgFileSection" style="display:none;">
+                                <input type="file" id="imageFile" accept="image/*" style="display:none;" onchange="handleImageFile(this)">
+                                <label for="imageFile" class="btn btn-outline" style="display:inline-flex;cursor:pointer;">
+                                    <i class="fas fa-folder-open"></i> Выбрать изображение
+                                </label>
+                                <span id="imageFileName" style="margin-left:10px;font-size:0.85rem;color:var(--gray-color);"></span>
+                            </div>
+
+                            <!-- Превью -->
+                            <div id="imagePreview" class="image-preview" style="margin-top:15px;">
+                                <img src="" alt="Предпросмотр" id="imagePreviewImg" style="max-width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:none;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="description" class="form-label"><span>*</span> Краткое описание</label>
@@ -84,12 +122,25 @@
                                 <input type="text" id="time" class="form-control" placeholder="Например: 30 минут" required>
                             </div>
                             <div class="form-group">
-   
+                                <label class="form-label"><span>*</span> Сложность</label>
+                                <div class="custom-select" id="difficultySelect">
+                                    <div class="custom-select-trigger">
+                                        <span class="selected-value">Выберите сложность</span>
+                                        <i class="fas fa-chevron-down arrow"></i>
+                                    </div>
+                                    <div class="custom-select-dropdown">
+                                        <div class="custom-select-option" data-value="Лёгкая">Лёгкая</div>
+                                        <div class="custom-select-option" data-value="Средняя">Средняя</div>
+                                        <div class="custom-select-option" data-value="Сложная">Сложная</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="difficulty" name="difficulty">
+                            </div>
                         </div>
                        
                      
     <div class="form-group">
-        <label class="form-label"><span>*</span> Категория</label>
+        <label class="form-label">Категория</label>
         <!-- Кастомный выпадающий список с иконками-эмодзи -->
         <div class="custom-select" id="categorySelect">
             <div class="custom-select-trigger">
@@ -162,7 +213,7 @@
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane"></i> Опубликовать рецепт</button>
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitRecipeBtn"><i class="fas fa-paper-plane"></i> Опубликовать рецепт</button>
                             <button type="button" class="btn btn-outline" onclick="window.history.back()"><i class="fas fa-times"></i> Отмена</button>
                         </div>
                     </form>
@@ -206,11 +257,19 @@
             <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
         </div>
         <div class="mobile-menu__content">
-            <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
-            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
-            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
-            
-            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+            <a href="index.html" class="mobile-menu__link"><i class="fas fa-home"></i> Главная</a>
+            <a href="profile.html?tab=favorites" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link" id="mobileCategoriesLink"><i class="fas fa-tags"></i> Категории</a>
+            <a href="add-recipe.html" class="mobile-menu__link"><i class="fas fa-plus-circle"></i> Добавить рецепт</a>
+
+            <!-- Гость: Профиль → login, Войти, Регистрация -->
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            <a href="registration/register.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user-plus"></i> Регистрация</a>
+
+            <!-- Авторизован: Профиль, Выйти(красная) -->
+            <a href="profile.html" class="mobile-menu__link auth-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+            <button class="mobile-menu__link auth-only btn-logout-mobile auth-hidden" style="border:none;background:none;width:100%;text-align:left;cursor:pointer;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
@@ -279,69 +338,209 @@
             ingredientsContainer.appendChild(createIngredientItem());
         }
 
-        // ========== ПРЕДПРОСМОТР ИЗОБРАЖЕНИЯ ==========
+        // ========== ИЗОБРАЖЕНИЕ ==========
         const imageUrlInput = document.getElementById('imageUrl');
-        const imagePreview = document.getElementById('imagePreview');
-        if (imageUrlInput && imagePreview) {
+        const imagePreviewImg = document.getElementById('imagePreviewImg');
+        let imageFileDataUrl = null;
+
+        /**
+         * Переключить способ загрузки (ссылка / файл)
+         */
+        window.switchImageMethod = function(method) {
+            const linkBtn = document.getElementById('imgLinkBtn');
+            const fileBtn = document.getElementById('imgFileBtn');
+            const linkSection = document.getElementById('imgLinkSection');
+            const fileSection = document.getElementById('imgFileSection');
+
+            if (method === 'link') {
+                // Переключаемся на ссылку — очищаем файл
+                imageFileDataUrl = null;
+                const fileInput = document.getElementById('imageFile');
+                if (fileInput) fileInput.value = '';
+                const nameEl = document.getElementById('imageFileName');
+                if (nameEl) nameEl.textContent = '';
+
+                linkBtn.classList.add('active');
+                fileBtn.classList.remove('active');
+                linkSection.style.display = 'block';
+                fileSection.style.display = 'none';
+
+                // Если в поле ссылки уже есть URL — показываем превью
+                const url = imageUrlInput ? imageUrlInput.value.trim() : '';
+                if (url && imagePreviewImg) {
+                    imagePreviewImg.src = url;
+                    imagePreviewImg.style.display = 'block';
+                }
+            } else {
+                // Переключаемся на файл — очищаем ссылку
+                if (imageUrlInput) imageUrlInput.value = '';
+
+                fileBtn.classList.add('active');
+                linkBtn.classList.remove('active');
+                fileSection.style.display = 'block';
+                linkSection.style.display = 'none';
+
+                // Если файл уже выбран — показываем его превью
+                if (imageFileDataUrl && imagePreviewImg) {
+                    imagePreviewImg.src = imageFileDataUrl;
+                    imagePreviewImg.style.display = 'block';
+                }
+            }
+        };
+
+        /**
+         * Обработка загрузки файла
+         */
+        window.handleImageFile = function(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { alert('Выберите изображение'); return; }
+            if (file.size > 5 * 1024 * 1024) { alert('Файл слишком большой. Максимум 5 МБ'); return; }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imageFileDataUrl = e.target.result;
+                const nameEl = document.getElementById('imageFileName');
+                if (nameEl) nameEl.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' КБ)';
+
+                // Показываем превью
+                if (imagePreviewImg) {
+                    imagePreviewImg.src = imageFileDataUrl;
+                    imagePreviewImg.style.display = 'block';
+                }
+                // Очищаем поле ссылки
+                if (imageUrlInput) imageUrlInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // Предпросмотр при вводе ссылки
+        if (imageUrlInput) {
             imageUrlInput.addEventListener('input', function() {
                 const url = this.value.trim();
                 if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-                    imagePreview.innerHTML = `<img src="${url}" alt="Предпросмотр">`;
-                } else {
-                    imagePreview.innerHTML = '';
+                    imageFileDataUrl = null;
+                    const nameEl = document.getElementById('imageFileName');
+                    if (nameEl) nameEl.textContent = '';
+                    const fileInput = document.getElementById('imageFile');
+                    if (fileInput) fileInput.value = '';
+
+                    if (imagePreviewImg) {
+                        imagePreviewImg.src = url;
+                        imagePreviewImg.style.display = 'block';
+                    }
+                } else if (!url && imagePreviewImg) {
+                    imagePreviewImg.style.display = 'none';
                 }
             });
         }
 
-        // ========== ОТПРАВКА ФОРМЫ (СОХРАНЕНИЕ В localStorage) ==========
+        // ========== ОТПРАВКА ФОРМЫ (API) ==========
         const recipeForm = document.getElementById('recipeForm');
         if (recipeForm) {
-            recipeForm.addEventListener('submit', function(e) {
+            recipeForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // Сбор ингредиентов
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Войдите в систему, чтобы публиковать рецепты');
+                    window.location.href = 'registration/login.html';
+                    return;
+                }
+
                 const ingredients = [];
                 document.querySelectorAll('#ingredientsContainer .ingredient-item input').forEach(input => {
                     if (input.value.trim()) ingredients.push(input.value.trim());
                 });
 
+                let imageUrl = '';
+                if (imageFileDataUrl) {
+                    imageUrl = imageFileDataUrl;
+                } else if (imageUrlInput && imageUrlInput.value.trim()) {
+                    imageUrl = imageUrlInput.value.trim();
+                }
+
+                const difficultyVal = document.getElementById('difficulty') ? document.getElementById('difficulty').value : '';
+                const categoryVal = document.getElementById('category') ? document.getElementById('category').value : '';
+
                 const recipeData = {
-                    id: Date.now(),
                     title: document.getElementById('title').value.trim(),
                     description: document.getElementById('description').value.trim(),
-                    fullDescription: document.getElementById('fullDescription').value.trim(),
+                    full_description: document.getElementById('fullDescription').value.trim(),
                     ingredients: ingredients,
                     instructions: document.getElementById('instructions').value.trim(),
                     time: document.getElementById('time').value.trim(),
-                    difficulty: document.getElementById('difficulty').value,
-                    category: document.getElementById('category').value,
-                    servings: document.getElementById('servings').value,
-                    imageUrl: document.getElementById('imageUrl').value.trim(),
-                    tags: document.getElementById('tags').value.trim(),
-                    notes: document.getElementById('notes').value.trim(),
+                    difficulty: difficultyVal,
+                    category: categoryVal,
+                    servings: parseInt(document.getElementById('servings').value) || 4,
+                    image_url: imageUrl,
+                    tags: document.getElementById('tags') ? document.getElementById('tags').value.trim() : '',
+                    notes: document.getElementById('notes') ? document.getElementById('notes').value.trim() : '',
                     calories: document.getElementById('calories').value.trim(),
                     protein: document.getElementById('protein').value.trim(),
                     carbs: document.getElementById('carbs').value.trim(),
                     fat: document.getElementById('fat').value.trim(),
-                    createdAt: new Date().toISOString()
                 };
 
-                // Валидация
-                if (!recipeData.title || !recipeData.description || ingredients.length === 0 || !recipeData.instructions || !recipeData.time || !recipeData.difficulty || !recipeData.category) {
+                if (!recipeData.title || !recipeData.description || ingredients.length === 0 ||
+                    !recipeData.instructions || !recipeData.time || !recipeData.difficulty) {
                     alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой *)');
                     return;
                 }
 
-                // Сохраняем
-                let recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
-                recipes.unshift(recipeData);
-                localStorage.setItem('flavorfusion_recipes', JSON.stringify(recipes));
+                const submitBtn = document.getElementById('submitRecipeBtn');
+                if (!submitBtn) {
+                    alert('Ошибка: кнопка отправки не найдена в DOM');
+                    return;
+                }
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Публикация...';
+                submitBtn.disabled = true;
 
-                alert('Рецепт успешно опубликован!');
-                recipeForm.reset();
-                ingredientsContainer.innerHTML = '';
-                ingredientsContainer.appendChild(createIngredientItem());
-                imagePreview.innerHTML = '';
+                try {
+                    const response = await fetch('http://localhost:5000/api/recipes', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token,
+                        },
+                        body: JSON.stringify(recipeData),
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error || 'Ошибка публикации');
+
+                    alert('Рецепт «' + recipeData.title + '» успешно опубликован!');
+
+                    recipeForm.reset();
+                    ingredientsContainer.innerHTML = '';
+                    ingredientsContainer.appendChild(createIngredientItem());
+
+                    // Сброс превью изображения
+                    if (imagePreviewImg) {
+                        imagePreviewImg.style.display = 'none';
+                        imagePreviewImg.src = '';
+                    }
+                    const nameEl = document.getElementById('imageFileName');
+                    if (nameEl) nameEl.textContent = '';
+                    imageFileDataUrl = null;
+                    const fileInput = document.getElementById('imageFile');
+                    if (fileInput) fileInput.value = '';
+                    if (imageUrlInput) imageUrlInput.value = '';
+                    const selVal = document.querySelector('#categorySelect .selected-value');
+                    if (selVal) selVal.textContent = 'Выберите категорию';
+                    const catHidden = document.getElementById('category');
+                    if (catHidden) catHidden.value = '';
+
+                    window.location.href = 'index.html';
+
+                } catch (err) {
+                    console.error('[add-recipe] Ошибка:', err);
+                    alert(err.message || 'Ошибка сети. Убедитесь, что сервер запущен.');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
             });
         }
 
@@ -420,7 +619,7 @@
 (function() {
     const select = document.getElementById('difficultySelect');
     if (!select) return;
-    
+
     const trigger = select.querySelector('.custom-select-trigger');
     const dropdown = select.querySelector('.custom-select-dropdown');
     const options = select.querySelectorAll('.custom-select-option');
@@ -438,13 +637,12 @@
     // Выбор опции
     options.forEach(opt => {
         opt.addEventListener('click', () => {
-            const value = opt.dataset.value; // например "🟢 Лёгкая"
+            const value = opt.dataset.value;
             selectedSpan.textContent = value;
             hiddenInput.value = value;
             dropdown.classList.remove('show');
             const arrow = trigger.querySelector('.arrow');
             arrow.style.transform = '';
-            // Убираем выделение
             options.forEach(o => o.classList.remove('selected'));
             opt.classList.add('selected');
         });
@@ -459,5 +657,8 @@
         }
     });
 })();
-    </script> 
+    </script>
+
+<!-- Проверка авторизации -->
+<script src="js/auth-check.js" defer></script>
 </html>

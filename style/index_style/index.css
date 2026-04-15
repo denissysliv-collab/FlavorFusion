@@ -104,7 +104,7 @@
             color: white;
             box-shadow: var(--shadow-md);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-primary:hover { opacity: 0.9; box-shadow: var(--shadow-lg); }
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary-color);
@@ -118,7 +118,7 @@
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-md);
         }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .cta-button:hover { opacity: 0.9; box-shadow: var(--shadow-lg); }
 
         /* ===== HEADER (статический) ===== */
         .header {
@@ -455,6 +455,7 @@
             gap: 8px;
             justify-content: center;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
         .filter-btn {
             padding: 6px 16px;
@@ -466,6 +467,7 @@
             transition: all var(--transition-normal);
             font-weight: 500;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
         .filter-btn:hover {
             border-color: var(--primary-color);
@@ -552,7 +554,14 @@
             overflow: hidden;
         }
         .author-avatar-small img { width: 100%; height: 100%; object-fit: cover; }
-        .recipe-author span { font-size: 0.8rem; color: var(--gray-color); }
+        .recipe-author a {
+            font-size: 0.8rem;
+            color: var(--primary-color, #FF6B6B);
+            text-decoration: none;
+        }
+        .recipe-author a:hover {
+            text-decoration: underline;
+        }
         .recipe-rating {
             display: flex;
             align-items: center;
@@ -585,21 +594,20 @@
             font-size: 0.85rem;
         }
         .meta-item i { color: var(--primary-color); }
+        /* Кнопки действий — всегда видны */
         .recipe-actions {
             position: absolute;
             top: 12px;
             left: 12px;
             display: flex;
             gap: 8px;
-            opacity: 0;
-            transition: opacity var(--transition-normal);
+            opacity: 1;
         }
-        .recipe-card:hover .recipe-actions { opacity: 1; }
         .btn-action {
             width: 34px;
             height: 34px;
             border-radius: var(--radius-circle);
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border: none;
             display: flex;
             align-items: center;
@@ -608,14 +616,40 @@
             box-shadow: var(--shadow-sm);
             transition: all var(--transition-normal);
             color: var(--dark-color);
+            backdrop-filter: blur(4px);
         }
         .btn-action:hover {
-            background: var(--primary-color);
-            color: white;
             transform: scale(1.1);
+            box-shadow: var(--shadow-md);
         }
+        /* Сердечко: не в избранном — только красная обводка */
+        .btn-action.btn-favorite i {
+            -webkit-text-stroke: 1.5px var(--primary-color);
+            color: transparent;
+            transition: all var(--transition-normal);
+        }
+        /* В избранном — закрашено */
         .btn-action.btn-favorite.active {
             background: var(--primary-color);
+            color: white;
+        }
+        .btn-action.btn-favorite.active i {
+            -webkit-text-stroke: 0;
+            color: white;
+        }
+
+        /* Кнопка лайка — чёрно-белый по умолчанию, при лайке: золотой фон + белый кулак */
+        .btn-action.btn-like-feed {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .btn-action.btn-like-feed i {
+            color: var(--dark-color, #2D3436);
+            transition: all var(--transition-normal);
+        }
+        .btn-action.btn-like-feed.active {
+            background: var(--accent-color, #FFD166);
+        }
+        .btn-action.btn-like-feed.active i {
             color: white;
         }
         .view-more {
@@ -998,9 +1032,38 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .footer__links { grid-template-columns: repeat(2, 1fr); gap: 25px; }
             .footer__bottom { flex-direction: column; text-align: center; gap: 12px; }
+            /* Фильтры — горизонтальный скролл на мобильных */
+            .section-controls {
+                justify-content: flex-start;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 10px;
+                margin: 0 -15px;
+                padding-left: 15px;
+                padding-right: 15px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .section-controls::-webkit-scrollbar {
+                display: none;
+            }
+            .filter-btn {
+                flex-shrink: 0;
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
             .mobile-menu { width: 100%; }
-            .recipe-actions { opacity: 1 !important; background: rgba(255, 255, 255, 0.9); padding: 5px; border-radius: var(--radius-md); }
+            .recipe-actions { opacity: 1 !important; padding: 5px; border-radius: var(--radius-md); background: transparent !important; }
             .btn-action { min-width: 44px; min-height: 44px; }
+            .btn-action.btn-like-feed {
+                background: rgba(255, 255, 255, 0.95);
+            }
+            .btn-action.btn-like-feed i {
+                color: var(--dark-color, #2D3436);
+            }
         }
         @media (max-width: 576px) {
             h1 { font-size: 2.2rem; }
@@ -1184,10 +1247,47 @@
         pointer-events: none;
     }
 }
-    /* скрываем обычное меню и блок user-menu (аватар) */
-   
-    /* показываем бургер */
-   
-    /* остальные стили из вашего медиа-запроса остаются без изменений */
+
+/* ===== Мобильный блок пользователя (аватар + имя в бургере) ===== */
+.mobile-menu__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--light-gray);
+    margin-top: 10px;
+}
+
+/* ===== Имя пользователя в десктопной шапке ===== */
+#nav-username {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+#nav-avatar-link {
+    text-decoration: none;
+}
+
+/* Кнопка "Выйти" в десктопной шапке */
+#desktop-logout-btn {
+    text-decoration: none;
+    transition: all var(--transition-normal);
+}
+
+#desktop-logout-btn:hover {
+    color: var(--danger-color) !important;
+    background: rgba(214, 48, 49, 0.08);
+}
+
+/* На мобильных: скрываем Войти/Регистрация, десктопную кнопку Выйти и разделитель */
+@media (max-width: 768px) {
+    #login-link,
+    #register-link,
+    #desktop-logout-btn,
+    #nav-divider {
+        display: none !important;
+    }
+}
 
   

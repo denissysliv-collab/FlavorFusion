@@ -820,66 +820,111 @@
     </footer>
 
     <script>
-        // Валидация формы
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        // =============================================
+        // КОНФИГУРАЦИЯ API
+        // =============================================
+        const API_BASE = 'http://localhost:5000/api';
+
+        /**
+         * Отправить данные на сервер при регистрации
+         */
+        async function handleRegister(e) {
             e.preventDefault();
-            
+
             let isValid = true;
             const username = document.getElementById('username');
             const email = document.getElementById('email');
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirmPassword');
             const terms = document.getElementById('terms');
-            
+
             // Сброс ошибок
             document.querySelectorAll('.error-message').forEach(el => {
                 el.style.display = 'none';
                 el.previousElementSibling?.classList?.remove('error');
             });
-            
-            // Валидация имени
-            if (username.value.length < 3 || username.value.length > 20) {
-                document.getElementById('usernameError').style.display = 'block';
-                username.classList.add('error');
+
+            // Клиентская валидация
+            if (username.value.length < 3 || username.value.length > 50) {
+                showError('usernameError', username);
                 isValid = false;
             }
-            
-            // Валидация email
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email.value)) {
-                document.getElementById('emailError').style.display = 'block';
-                email.classList.add('error');
+                showError('emailError', email);
                 isValid = false;
             }
-            
-            // Валидация пароля
+
             if (password.value.length < 8) {
-                document.getElementById('passwordError').style.display = 'block';
-                password.classList.add('error');
+                showError('passwordError', password);
                 isValid = false;
             }
-            
-            // Подтверждение пароля
+
             if (password.value !== confirmPassword.value) {
-                document.getElementById('confirmPasswordError').style.display = 'block';
-                confirmPassword.classList.add('error');
+                showError('confirmPasswordError', confirmPassword);
                 isValid = false;
             }
-            
-            // Проверка согласия
+
             if (!terms.checked) {
                 alert('Необходимо принять условия использования');
                 isValid = false;
             }
-            
-            if (isValid) {
-                // Имитация отправки формы
-                alert('Регистрация успешна! Перенаправляем на страницу входа...');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1000);
+
+            if (!isValid) return;
+
+            // Показываем кнопку загрузки
+            const submitBtn = document.querySelector('#registerForm .btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Регистрация...';
+            submitBtn.disabled = true;
+
+            try {
+                // Отправляем запрос к реальному API
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username.value.trim(),
+                        email: email.value.trim(),
+                        password: password.value,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // Ошибка от сервера — показываем пользователю
+                    alert(data.error || 'Ошибка регистрации');
+                    return;
+                }
+
+                // Успех: сохраняем ТОЛЬКО токен (не данные профиля!)
+                localStorage.setItem('token', data.token);
+
+                alert('Регистрация успешна! Добро пожаловать, ' + data.user.username + '!');
+                window.location.href = '../index.html';
+
+            } catch (err) {
+                console.error('Ошибка сети:', err);
+                alert('Ошибка сети. Убедитесь, что сервер запущен на http://localhost:5000');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
-        });
+        }
+
+        /**
+         * Показать ошибку валидации
+         */
+        function showError(errorId, input) {
+            const errorEl = document.getElementById(errorId);
+            if (errorEl) errorEl.style.display = 'block';
+            if (input) input.classList.add('error');
+        }
+
+        // Привязываем обработчик
+        document.getElementById('registerForm').addEventListener('submit', handleRegister);
         
         // Показать/скрыть пароль
         document.getElementById('togglePassword').addEventListener('click', function() {

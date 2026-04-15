@@ -104,7 +104,7 @@
             color: white;
             box-shadow: var(--shadow-md);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-primary:hover { opacity: 0.9; box-shadow: var(--shadow-lg); }
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary-color);
@@ -118,7 +118,7 @@
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-md);
         }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .cta-button:hover { opacity: 0.9; box-shadow: var(--shadow-lg); }
 
         /* ===== HEADER (статический) ===== */
         .header {
@@ -1001,8 +1001,9 @@
             .footer__links { grid-template-columns: repeat(2, 1fr); gap: 25px; }
             .footer__bottom { flex-direction: column; text-align: center; gap: 12px; }
             .mobile-menu { width: 100%; }
-            .recipe-actions { opacity: 1 !important; background: rgba(255, 255, 255, 0.9); padding: 5px; border-radius: var(--radius-md); }
-            .btn-action { min-width: 44px; min-height: 44px; }
+            .recipe-actions { opacity: 1 !important; padding: 6px; border-radius: var(--radius-md); }
+            .btn-action { min-width: 40px; min-height: 40px; }
+            .recipes-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
         }
         @media (max-width: 576px) {
             h1 { font-size: 2.2rem; }
@@ -1010,7 +1011,7 @@
             h3 { font-size: 1.4rem; }
             .hero__title-line { font-size: 1.8rem; }
             .categories-grid { grid-template-columns: 1fr; }
-            .recipes-grid { grid-template-columns: 1fr; }
+            .recipes-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .stats-grid { grid-template-columns: 1fr; }
             .footer__links { grid-template-columns: 1fr; }
         }
@@ -1281,7 +1282,7 @@ p {
     box-shadow: var(--shadow-md);
 }
 .btn-primary:hover {
-    transform: translateY(-2px);
+    opacity: 0.9;
     box-shadow: var(--shadow-lg);
 }
 .btn-outline {
@@ -1326,6 +1327,9 @@ p {
     object-fit: cover;
     border: 4px solid white;
     box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: var(--light-gray);
 }
 .btn-avatar-edit {
     position: absolute;
@@ -1430,9 +1434,11 @@ p {
     display: none;
     padding: 25px;
     animation: fadeIn 0.3s ease;
+    overflow-x: hidden;
 }
 .tab-content.active {
     display: block;
+    overflow-x: hidden;
 }
 .tab-header {
     display: flex;
@@ -1781,6 +1787,7 @@ body {
     .profile-avatar-large img {
         width: 100px;
         height: 100px;
+        opacity: 0;
     }
     .btn-avatar-edit {
         width: 30px;
@@ -1875,6 +1882,7 @@ body {
     .profile-avatar-large img {
         width: 80px;
         height: 80px;
+        opacity: 0;
     }
     .profile-header {
         padding: 15px;
@@ -2010,6 +2018,241 @@ body {
     .profile-section {
         padding-top: 80px !important;
         padding-bottom: 30px !important;
+    }
+}
+
+/* ===== Имя пользователя в десктопной шапке ===== */
+#nav-username {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+#nav-avatar-link {
+    text-decoration: none;
+}
+
+#desktop-logout-btn {
+    text-decoration: none;
+    transition: all var(--transition-normal);
+}
+
+#desktop-logout-btn:hover {
+    color: var(--danger-color) !important;
+    background: rgba(214, 48, 49, 0.08);
+}
+
+/* ===== Кнопки переключения метода аватара ===== */
+.avatar-method-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-md);
+    background: white;
+    color: var(--gray-color);
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.avatar-method-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.avatar-method-btn.active {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--shadow-sm);
+}
+
+/* На мобильных: скрываем десктопные кнопки входа/регистрации/выхода и разделитель */
+@media (max-width: 768px) {
+    #login-link,
+    #register-link,
+    #desktop-logout-btn,
+    #nav-divider {
+        display: none !important;
+    }
+}
+
+/* Скрываем профиль до загрузки данных */
+.profile-info {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-stats {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Кнопка подписки */
+#subscribeBtn.subscribed {
+    background: var(--light-color, #F9F9F9) !important;
+    color: var(--gray-color, #636E72) !important;
+    border: 2px solid var(--light-gray, #DFE6E9) !important;
+}
+
+#subscribeBtn.subscribed:hover {
+    background: var(--light-gray, #DFE6E9) !important;
+}
+
+/* Карточки авторов (вкладка Подписки) */
+.authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.author-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Фильтры рецептов автора (чужой профиль) */
+.filter-chip {
+    padding: 8px 16px;
+    border: 2px solid var(--light-gray, #DFE6E9);
+    border-radius: 20px;
+    background: white;
+    color: var(--gray-color, #636E72);
+    font-family: var(--font-primary, 'Poppins'), sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal, 0.3s);
+    white-space: nowrap;
+}
+
+.filter-chip:hover {
+    border-color: var(--primary-color, #FF6B6B);
+    color: var(--primary-color, #FF6B6B);
+}
+
+.filter-chip.active {
+    background: var(--gradient-primary, linear-gradient(135deg, #FF6B6B, #FF8E53));
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+}
+
+@media (max-width: 768px) {
+    .profile-info {
+        opacity: 0;
+    }
+    .profile-stats {
+        opacity: 0;
+    }
+    .authors-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== КАРТОЧКИ РЕЦЕПТОВ В ПРОФИЛЕ — адаптивность ===== */
+@media (max-width: 768px) {
+    .recipe-actions {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    .btn-action.btn-like-feed {
+        background: rgba(255, 255, 255, 0.95);
+    }
+    .btn-action.btn-like-feed i {
+        color: var(--dark-color, #2D3436);
+        transition: all var(--transition-normal);
+    }
+    .btn-action.btn-like-feed.active {
+        background: var(--accent-color, #FFD166) !important;
+    }
+    .btn-action.btn-like-feed.active i {
+        color: white;
+    }
+    .btn-action.btn-like-feed {
+        min-width: 40px;
+        min-height: 40px;
+    }
+    .btn-action.btn-like-feed i {
+        -webkit-text-stroke: 1.5px var(--accent-color, #FFD166);
+        color: transparent;
+    }
+    .btn-action.btn-like-feed.active {
+        background: var(--accent-color, #FFD166) !important;
+    }
+    .btn-action.btn-like-feed.active i {
+        -webkit-text-stroke: 0;
+        color: var(--dark-color, #2D3436);
+    }
+}
+
+@media (max-width: 480px) {
+    .recipes-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        justify-items: center;
+    }
+    .recipe-card {
+        max-width: 340px;
+        width: 100%;
+    }
+    .recipe-image {
+        height: 160px;
+    }
+    .btn-action.btn-like-feed {
+        min-width: 36px;
+        min-height: 36px;
+    }
+    .btn-action.btn-like-feed i {
+        -webkit-text-stroke: 1.5px var(--accent-color, #FFD166);
+        color: transparent;
+    }
+    .btn-action.btn-like-feed.active {
+        background: var(--accent-color, #FFD166) !important;
+    }
+    .btn-action.btn-like-feed.active i {
+        -webkit-text-stroke: 0;
+        color: var(--dark-color, #2D3436);
+    }
+}
+
+@media (max-width: 400px) {
+    .recipe-card {
+        max-width: 100%;
+    }
+    .recipe-image {
+        height: 140px;
+    }
+    .recipe-actions {
+        top: 8px;
+        left: 8px;
+        padding: 4px;
+    }
+    .btn-action {
+        min-width: 36px;
+        min-height: 36px;
+    }
+    .btn-action.btn-like-feed {
+        min-width: 36px;
+        min-height: 36px;
+    }
+    .btn-action.btn-like-feed i {
+        -webkit-text-stroke: 1.5px var(--accent-color, #FFD166);
+        color: transparent;
+    }
+    .btn-action.btn-like-feed.active {
+        background: var(--accent-color, #FFD166) !important;
+    }
+    .btn-action.btn-like-feed.active i {
+        -webkit-text-stroke: 0;
+        color: var(--dark-color, #2D3436);
     }
 }
     

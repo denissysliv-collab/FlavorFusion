@@ -448,7 +448,11 @@
     </footer>
 
     <script>
-        // Валидация формы логина
+        // =============================================
+        // КОНФИГУРАЦИЯ API
+        // =============================================
+        const API_BASE = 'http://localhost:5000/api';
+
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
@@ -456,8 +460,7 @@
         const passwordError = document.getElementById('passwordError');
 
         // Показать/скрыть пароль
-        const togglePassword = document.getElementById('togglePassword');
-        togglePassword.addEventListener('click', function() {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             const icon = this.querySelector('i');
@@ -475,18 +478,20 @@
             passwordInput.classList.remove('error');
         });
 
-        // Обработка отправки формы
-        loginForm.addEventListener('submit', function(e) {
+        /**
+         * Обработка отправки формы логина — реальный запрос к API
+         */
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             let isValid = true;
 
-            // Сброс стилей ошибок
+            // Сброс ошибок
             emailError.style.display = 'none';
             passwordError.style.display = 'none';
-            emailInput.classList.remove('error');   
+            emailInput.classList.remove('error');
             passwordInput.classList.remove('error');
 
-            // Валидация email
+            // Клиентская валидация
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailInput.value)) {
                 emailError.style.display = 'block';
@@ -494,33 +499,64 @@
                 isValid = false;
             }
 
-            // Валидация пароля (не пустой)
             if (!passwordInput.value.trim()) {
                 passwordError.style.display = 'block';
                 passwordInput.classList.add('error');
                 isValid = false;
             }
 
-            if (isValid) {
-                // Имитация успешного входа
-                // В реальном приложении здесь был бы запрос к серверу
+            if (!isValid) return;
+
+            // Кнопка загрузки
+            const submitBtn = loginForm.querySelector('.btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: emailInput.value.trim(),
+                        password: passwordInput.value,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // 401 — неверный email/пароль
+                    passwordError.textContent = data.error || 'Неверный email или пароль';
+                    passwordError.style.display = 'block';
+                    passwordInput.classList.add('error');
+                    return;
+                }
+
+                // Успех: сохраняем ТОЛЬКО токен
+                localStorage.setItem('token', data.token);
+
+                // Если выбрано "Запомнить меня" — сохраняем email для автозаполнения
                 const remember = document.getElementById('remember').checked;
                 if (remember) {
                     localStorage.setItem('rememberedEmail', emailInput.value);
                 } else {
                     localStorage.removeItem('rememberedEmail');
                 }
-                // Сохраняем информацию о пользователе (имитация)
-                const userData = {
-                    email: emailInput.value,
-                    name: emailInput.value.split('@')[0],
-                    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face'
-                };
-                localStorage.setItem('currentUser', JSON.stringify(userData));
+
+                // ВАЖНО: НЕ сохраняем currentUser в localStorage!
+                // При загрузке index.html фронтенд вызовет GET /api/users/me
+                // для получения свежих данных напрямую из БД
+
                 alert('Вход выполнен успешно! Перенаправляем на главную...');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                window.location.href = '../index.html';
+
+            } catch (err) {
+                console.error('Ошибка сети:', err);
+                alert('Ошибка сети. Убедитесь, что сервер запущен на http://localhost:5000');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         });
 

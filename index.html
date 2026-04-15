@@ -28,18 +28,31 @@
                 <nav class="nav">
                     <div class="nav__menu">
                         <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
-                        <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>  <!-- При нажатии на кнопку "Избранное" пользователя перебрасывает на свой профиль с открытым разделом ( class="tab-btn" data-tab="activity" )-->
+                        <a href="profile.html?tab=favorites" class="nav__link" id="nav-favorites-link"><i class="fas fa-heart"></i><span>Избранное</span></a>
                         <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
                         <a href="add-recipe.html" class="nav__link cta-button"><i class="fas fa-plus-circle"></i><span>Добавить рецепт</span></a>
                     </div>
-                    <a href="profile.html">
-                        <div class="user-menu">
 
-                        <div class="user-avatar" id="userAvatar">
-                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
-                        </div>
-                    </div>
+                    <!-- Гость: Войти / Регистрация -->
+                    <a href="registration/login.html" id="login-link" class="nav__link auth-hidden">
+                        <i class="fas fa-sign-in-alt"></i><span>Войти</span>
                     </a>
+                    <a href="registration/register.html" id="register-link" class="nav__link auth-hidden">
+                        <i class="fas fa-user-plus"></i><span>Регистрация</span>
+                    </a>
+
+                    <!-- Авторизован: Аватар + Имя + Выйти -->
+                    <a href="profile.html" id="nav-avatar-link" class="auth-hidden">
+                        <div class="user-menu">
+                            <div class="user-avatar">
+                                <img src="" alt="User" id="nav-avatar">
+                            </div>
+                            <span id="nav-username"></span>
+                        </div>
+                    </a>
+                    <button id="desktop-logout-btn" class="nav__link auth-hidden" style="border:none;background:none;cursor:pointer;font-family:var(--font-primary);font-size:0.95rem;color:var(--gray-color);" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i><span>Выйти</span>
+                    </button>
                 </nav>
                 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
@@ -108,12 +121,12 @@
         </div>
         <div class="categories-grid-wrapper">
             <div class="categories-grid">
-                <div class="category-card" data-category="breakfast"><div class="category-icon"><i class="fas fa-coffee"></i></div><h3>Завтраки</h3><p>156 рецептов</p><div class="category-bg"></div></div>
-                <div class="category-card" data-category="lunch"><div class="category-icon"><i class="fas fa-utensils"></i></div><h3>Основные блюда</h3><p>423 рецепта</p><div class="category-bg"></div></div>
-                <div class="category-card" data-category="dinner"><div class="category-icon"><i class="fas fa-moon"></i></div><h3>Ужины</h3><p>289 рецептов</p><div class="category-bg"></div></div>
-                <div class="category-card" data-category="dessert"><div class="category-icon"><i class="fas fa-ice-cream"></i></div><h3>Десерты</h3><p>198 рецептов</p><div class="category-bg"></div></div>
-                <div class="category-card" data-category="baking"><div class="category-icon"><i class="fas fa-bread-slice"></i></div><h3>Выпечка</h3><p>167 рецептов</p><div class="category-bg"></div></div>
-                <div class="category-card" data-category="healthy"><div class="category-icon"><i class="fas fa-heart"></i></div><h3>Здоровое питание</h3><p>234 рецепта</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🍳 Завтрак"><div class="category-icon"><i class="fas fa-coffee"></i></div><h3>Завтраки</h3><p>156 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🍝 Основные блюда"><div class="category-icon"><i class="fas fa-utensils"></i></div><h3>Основные блюда</h3><p>423 рецепта</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🌙 Ужин"><div class="category-icon"><i class="fas fa-moon"></i></div><h3>Ужины</h3><p>289 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🍰 Десерт"><div class="category-icon"><i class="fas fa-ice-cream"></i></div><h3>Десерты</h3><p>198 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🥖 Выпечка"><div class="category-icon"><i class="fas fa-bread-slice"></i></div><h3>Выпечка</h3><p>167 рецептов</p><div class="category-bg"></div></div>
+                <div class="category-card" data-category="🌿 Здоровое питание"><div class="category-icon"><i class="fas fa-heart"></i></div><h3>Здоровое питание</h3><p>234 рецепта</p><div class="category-bg"></div></div>
             </div>
         </div>
     </div>
@@ -139,9 +152,12 @@
                 <h2 class="section-title">Популярные рецепты</h2>
                 <div class="section-controls">
                     <button class="filter-btn active" data-filter="all">Все</button>
-                    <button class="filter-btn" data-filter="today">Сегодня</button>
-                    <button class="filter-btn" data-filter="week">Неделя</button>
-                    <button class="filter-btn" data-filter="month">Месяц</button>
+                    <button class="filter-btn" data-filter="popular">🔥 По популярности</button>
+                    <button class="filter-btn" data-filter="🍳 Завтрак">🍳 Завтрак</button>
+                    <button class="filter-btn" data-filter="🍝 Основные блюда">🍝 Основные</button>
+                    <button class="filter-btn" data-filter="🍰 Десерт">🍰 Десерты</button>
+                    <button class="filter-btn" data-filter="🥗 Салаты">🥗 Салаты</button>
+                    <button class="filter-btn" data-filter="🍲 Супы">🍲 Супы</button>
                 </div>
             </div>
             <!-- КОНТЕЙНЕР ДЛЯ КАРТОЧЕК РЕЦЕПТОВ (динамическое наполнение) -->
@@ -200,11 +216,21 @@
             <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
         </div>
         <div class="mobile-menu__content">
+            <!-- Мобильное меню -->
             <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
-            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
-            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
+            <a href="profile.html?tab=favorites" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link" id="mobileCategoriesLink"><i class="fas fa-tags"></i> Категории</a>
             <a href="add-recipe.html" class="mobile-menu__link"><i class="fas fa-plus-circle"></i> Добавить рецепт</a>
-            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+
+            <!-- Гость: Профиль → login, Войти, Регистрация -->
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            <a href="registration/register.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user-plus"></i> Регистрация</a>
+
+            <!-- Авторизован: Профиль, Аватар+Имя, Выйти(красная) -->
+            <a href="profile.html" class="mobile-menu__link auth-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+                
+            <button class="mobile-menu__link auth-only btn-logout-mobile auth-hidden" style="border:none;background:none;width:100%;text-align:left;cursor:pointer;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
@@ -240,7 +266,27 @@
     }
     // Закрываем при клике на любую ссылку в меню
     mobileLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+        link.addEventListener('click', function(e) {
+            closeMobileMenu();
+
+            // Если клик по «Категории» — скроллим и раскрываем аккордеон
+            if (this.id === 'mobileCategoriesLink') {
+                e.preventDefault();
+                setTimeout(() => {
+                    const categoriesSection = document.getElementById('categories');
+                    if (categoriesSection) {
+                        categoriesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    // Раскрываем аккордеон
+                    const wrapper = document.querySelector('.categories-grid-wrapper');
+                    const trigger = document.querySelector('.categories-accordion-trigger');
+                    if (wrapper && trigger) {
+                        wrapper.classList.add('open');
+                        trigger.classList.add('active');
+                    }
+                }, 300); // закрываем меню, потом скроллим
+            }
+        });
     });
     // Закрываем по клавише Escape
     document.addEventListener('keydown', function(e) {
@@ -249,50 +295,37 @@
         }
     });
 
+    // АККОРДЕОН КАТЕГОРИЙ (только мобильные)
+    (function() {
+        const trigger = document.querySelector('.categories-accordion-trigger');
+        const wrapper = document.querySelector('.categories-grid-wrapper');
+        if (!trigger || !wrapper) return;
 
+        function toggleAccordion(e) {
+            if (window.innerWidth > 768) return;
+            e.stopPropagation();
+            trigger.classList.toggle('active');
+            wrapper.classList.toggle('open');
+        }
 
-// АККОРДЕОН КАТЕГОРИЙ (только мобильные)
-(function() {
-    const trigger = document.querySelector('.categories-accordion-trigger');
-    const wrapper = document.querySelector('.categories-grid-wrapper');
-    if (!trigger || !wrapper) return;
-
-    function toggleAccordion(e) {
-        // Работает только на мобилках
-        if (window.innerWidth > 768) return;
-        e.stopPropagation();
-        trigger.classList.toggle('active');
-        wrapper.classList.toggle('open');
-    }
-
-    function resetAccordion() {
-        if (window.innerWidth > 768) {
-            // На десктопе убираем классы, делаем сетку видимой
-            trigger.classList.remove('active');
-            wrapper.classList.remove('open');
-            // Убеждаемся, что max-height не ограничен
-            wrapper.style.maxHeight = '';
-        } else {
-            // На мобилках: если нет класса open, то сворачиваем (по умолчанию свёрнуто)
-            if (!wrapper.classList.contains('open')) {
-                wrapper.classList.remove('open');
+        function resetAccordion() {
+            if (window.innerWidth > 768) {
                 trigger.classList.remove('active');
+                wrapper.classList.remove('open');
+                wrapper.style.maxHeight = '';
             }
         }
-    }
 
-    // Вешаем событие
-    trigger.addEventListener('click', toggleAccordion);
-    // При изменении размера окна
-    window.addEventListener('resize', resetAccordion);
-    // При загрузке
-    window.addEventListener('load', resetAccordion);
-    // Также запустим сразу, если страница загружена
-    resetAccordion();
-})();
+        trigger.addEventListener('click', toggleAccordion);
+        window.addEventListener('resize', resetAccordion);
+        window.addEventListener('load', resetAccordion);
+        resetAccordion();
+    })();
+</script>
 
-// Запускаем при загрузке и при изменении размера окна
-window.addEventListener('load', updateCategoriesAccordion);
-window.addEventListener('resize', updateCategoriesAccordion);
-</script>   
+<!-- Проверка авторизации (управляет видимостью login/register/profile/logout) -->
+<script src="js/auth-check.js" defer></script>
+<!-- Лента рецептов (рендеринг карточек) -->
+<script src="js/recipes-feed.js" defer></script>
+</body>
 </html>

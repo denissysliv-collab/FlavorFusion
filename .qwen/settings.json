@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir *)",
+      "Bash(npm install)",
+      "Bash(pg_isready)",
+      "Bash(cd *)",
+      "Bash(echo *)",
+      "Bash(npm run *)",
+      "Bash(node *)",
+      "Bash(taskkill *)"
+    ]
+  },
+  "$version": 3
+}

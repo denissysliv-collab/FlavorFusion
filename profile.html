@@ -20,19 +20,32 @@
                 </a>
                 <nav class="nav">
                     <div class="nav__menu">
-                        <a href="index.html" class="nav__link active"><i class="fas fa-home"></i><span>Главная</span></a>
-                        <a href="favorites.html" class="nav__link"><i class="fas fa-heart"></i><span>Избранное</span></a>
+                        <a href="index.html" class="nav__link"><i class="fas fa-home"></i><span>Главная</span></a>
+                        <a href="#" class="nav__link active" onclick="window.goToFavoritesTab(event)"><i class="fas fa-heart"></i><span>Избранное</span></a>
                         <a href="#categories" class="nav__link"><i class="fas fa-tags"></i><span>Категории</span></a>
                         <a href="add-recipe.html" class="nav__link cta-button"><i class="fas fa-plus-circle"></i><span>Добавить рецепт</span></a>
                     </div>
-                    <a href="profile.html">
-                        <div class="user-menu">
 
-                        <div class="user-avatar" id="userAvatar">
-                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="User">
-                        </div>
-                    </div>
+                    <!-- Гость: Войти / Регистрация -->
+                    <a href="registration/login.html" id="login-link" class="nav__link auth-hidden">
+                        <i class="fas fa-sign-in-alt"></i><span>Войти</span>
                     </a>
+                    <a href="registration/register.html" id="register-link" class="nav__link auth-hidden">
+                        <i class="fas fa-user-plus"></i><span>Регистрация</span>
+                    </a>
+
+                    <!-- Авторизован: Аватар + Имя + Выйти -->
+                    <a href="profile.html" id="nav-avatar-link" class="auth-hidden">
+                        <div class="user-menu">
+                            <div class="user-avatar">
+                                <img src="" alt="User" id="nav-avatar">
+                            </div>
+                            <span id="nav-username"></span>
+                        </div>
+                    </a>
+                    <button id="desktop-logout-btn" class="nav__link auth-hidden" style="border:none;background:none;cursor:pointer;font-family:var(--font-primary);font-size:0.95rem;color:var(--gray-color);" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i><span>Выйти</span>
+                    </button>
                 </nav>
                 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
@@ -47,32 +60,46 @@
                 <!-- Profile Header -->
                 <div class="profile-header">
                     <div class="profile-avatar-large">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpZz39un6LiWZygWCEv1d9c3Fa4yL48dcKLg&s" alt="User" id="profileAvatar">
+                        <img src="" alt="User" id="profileAvatar">
                         <button class="btn-avatar-edit" onclick="editAvatar()">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
-                    <div class="profile-info">
-                        <h1 class="profile-name" id="profileName">Мария Иванова</h1>
-                        <p class="profile-bio" id="profileBio">Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.</p>
-                        <div class="profile-stats">
+                    <div class="profile-info" id="profileInfo">
+                        <h1 class="profile-name" id="profileName"></h1>
+                        <p class="profile-bio" id="profileBio"></p>
+                        <div class="profile-stats" id="profileStats">
                             <div class="profile-stat">
-                                <strong id="recipesCount">12</strong>
+                                <strong id="recipesCount">0</strong>
                                 <span>Рецептов</span>
                             </div>
                             <div class="profile-stat">
-                                <strong id="favoritesCount">24</strong>
-                                <span>Избранных</span>
+                                <strong id="followersCount">0</strong>
+                                <span>Подписчиков</span>
                             </div>
                             <div class="profile-stat">
-                                <strong id="likesCount">156</strong>
+                                <strong id="followingCount">0</strong>
+                                <span>Подписок</span>
+                            </div>
+                            <div class="profile-stat">
+                                <strong id="likesCount">0</strong>
                                 <span>Лайков</span>
                             </div>
                         </div>
-                        <div class="profile-actions">
-                            <button class="btn btn-primary" onclick="editProfile()">
-                                <i class="fas fa-edit"></i> Редактировать профиль
-                            </button>
+                        <div class="profile-actions" id="profileActions">
+                            <!-- Владелец профиля -->
+                            <div id="ownerActions" style="display:none;gap:12px;">
+                                <button class="btn btn-primary" onclick="editProfile()">
+                                    <i class="fas fa-edit"></i> Редактировать профиль
+                                </button>
+                            </div>
+                            <!-- Гость/другой пользователь -->
+                            <div id="guestActions" style="display:none;">
+                                <button class="btn btn-primary" id="subscribeBtn" onclick="toggleSubscribe()">
+                                    <i class="fas fa-user-plus"></i> Подписаться
+                                </button>
+                            </div>
+                            <!-- Кнопка Поделиться (для всех) -->
                             <button class="btn btn-outline" onclick="shareProfile()">
                                 <i class="fas fa-share-alt"></i> Поделиться
                             </button>
@@ -80,8 +107,8 @@
                     </div>
                 </div>
 
-                <!-- Profile Tabs -->
-                <div class="profile-tabs">
+                <!-- Profile Tabs (для владельца) -->
+                <div class="profile-tabs" id="ownerTabs" style="display:none;">
                     <div class="tabs">
                         <button class="tab-btn active" data-tab="my-recipes">
                             <i class="fas fa-utensils"></i> Мои рецепты
@@ -92,12 +119,19 @@
                         <button class="tab-btn" data-tab="activity">
                             <i class="fas fa-chart-line"></i> Активность
                         </button>
+                        <button class="tab-btn" data-tab="liked-recipes">
+                            <i class="fas fa-thumbs-up"></i> Лайки
+                        </button>
+                        <button class="tab-btn" data-tab="following" style="position:relative;">
+                            <i class="fas fa-user-plus"></i> Подписки
+                            <span id="subsTabBadge" style="position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:#FF6B6B;color:white;font-size:0.6rem;font-weight:700;border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 4px;border:1px solid white;">0</span>
+                        </button>
                         <button class="tab-btn" data-tab="settings">
                             <i class="fas fa-cog"></i> Настройки
                         </button>
                     </div>
 
-                    <!-- My Recipes Tab -->
+                    <!-- My Recipes Tab (с кнопкой добавления рецепта) -->
                     <div class="tab-content active" id="my-recipes">
                         <div class="tab-header">
                             <h3>Мои рецепты</h3>
@@ -138,35 +172,45 @@
                         <div class="tab-header">
                             <h3>Моя активность</h3>
                         </div>
-                        <div class="activity-list">
-                            <!-- Активность будет здесь -->
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <p>Вам понравился рецепт <strong>"Паста Карбонара"</strong></p>
-                                    <span class="activity-time">2 часа назад</span>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-comment"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <p>Вы оставили комментарий к рецепту <strong>"Авокадо-тост"</strong></p>
-                                    <span class="activity-time">Вчера</span>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <p>Вы добавили рецепт <strong>"Тирамису"</strong></p>
-                                    <span class="activity-time">3 дня назад</span>
-                                </div>
-                            </div>
+                        <div class="activity-list" id="activityList">
+                            <!-- Активность загрузится из API -->
+                        </div>
+                        <div class="empty-state" id="activityEmpty" style="display:none;">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Пока нет активности</h4>
+                            <p>Опубликуйте рецепт, добавьте в избранное или отредактируйте — и это появится здесь</p>
+                        </div>
+                    </div>
+
+                    <!-- Лайки Tab (рецепты, лайкнутые пользователем) -->
+                    <div class="tab-content" id="liked-recipes">
+                        <div class="tab-header">
+                            <h3>Мои лайки</h3>
+                        </div>
+                        <div class="recipes-grid" id="likedRecipesList">
+                            <!-- Лайкнутые рецепты загрузятся из API -->
+                        </div>
+                        <div class="empty-state" id="likedRecipesEmpty" style="display:none;">
+                            <i class="fas fa-thumbs-up"></i>
+                            <h4>Вы ещё ничего не лайкнули</h4>
+                            <p>Нажмите на палец вверх на любом рецепте, чтобы он появился здесь</p>
+                        </div>
+                    </div>
+
+                    <!-- Подписки Tab (авторы, на которых подписан пользователь) -->
+                    <div class="tab-content" id="following">
+                        <div class="tab-header">
+                            <h3>Мои подписки</h3>
+                        </div>
+                        <!-- Уведомления о новых подписчиках -->
+                        <div id="subscriptionNotifs" style="margin-bottom:20px;display:none;"></div>
+                        <div class="authors-grid" id="followingList">
+                            <!-- Авторы загрузятся из API -->
+                        </div>
+                        <div class="empty-state" id="followingEmpty" style="display:none;">
+                            <i class="fas fa-user-plus"></i>
+                            <h4>Вы ещё ни на кого не подписаны</h4>
+                            <p>Подписывайтесь на авторов, чтобы видеть их новые рецепты</p>
                         </div>
                     </div>
 
@@ -175,44 +219,81 @@
                         <div class="tab-header">
                             <h3>Настройки профиля</h3>
                         </div>
-                        <div class="settings-form">
+                        <form class="settings-form" id="settingsForm">
                             <div class="form-group">
-                                <label class="form-label">Имя</label>
-                                <input type="text" class="form-control" value="Мария Иванова">
+                                <label class="form-label">Имя пользователя</label>
+                                <input type="text" class="form-control" id="settingsUsername" placeholder="Ваше имя" required minlength="3" maxlength="50">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" value="maria@example.com">
+                                <input type="email" class="form-control" id="settingsEmail" readonly style="opacity:0.6;cursor:not-allowed;" title="Email нельзя изменить">
                             </div>
+
+                            <!-- Аватар: выбор способа установки -->
                             <div class="form-group">
-                                <label class="form-label">О себе</label>
-                                <textarea class="form-control" rows="4">Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Уведомления</label>
-                                <div class="checkbox-group">
-                                    <label class="checkbox-label">  
-                                        <input type="checkbox" checked>
-                                        <span>Новые комментарии к моим рецептам</span>
+                                <label class="form-label">Аватар</label>
+
+                                <!-- Переключатель способа -->
+                                <div class="avatar-method-toggle" style="display:flex;gap:10px;margin-bottom:12px;">
+                                    <button type="button" class="avatar-method-btn active" id="avatarLinkBtn" onclick="switchAvatarMethod('link')">
+                                        <i class="fas fa-link"></i> По ссылке
+                                    </button>
+                                    <button type="button" class="avatar-method-btn" id="avatarFileBtn" onclick="switchAvatarMethod('file')">
+                                        <i class="fas fa-upload"></i> Загрузить файл
+                                    </button>
+                                </div>
+
+                                <!-- Способ 1: ссылка -->
+                                <div id="avatarLinkSection">
+                                    <input type="url" class="form-control" id="settingsAvatar" placeholder="https://example.com/avatar.jpg">
+                                </div>
+
+                                <!-- Способ 2: файл -->
+                                <div id="avatarFileSection" style="display:none;">
+                                    <input type="file" id="settingsAvatarFile" accept="image/*" style="display:none;" onchange="handleAvatarFile(this)">
+                                    <label for="settingsAvatarFile" class="btn btn-outline" style="display:inline-flex;cursor:pointer;">
+                                        <i class="fas fa-folder-open"></i> Выбрать изображение
                                     </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" checked>
-                                        <span>Лайки на моих рецептах</span>
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox">
-                                        <span>Новые рецепты от избранных авторов</span>
-                                    </label>
+                                    <div id="avatarFileName" style="margin-top:8px;font-size:0.85rem;color:var(--gray-color);"></div>
+                                </div>
+
+                                <!-- Превью -->
+                                <div id="settingsAvatarPreview" style="margin-top:12px;">
+                                    <img src="" alt="Аватар" id="settingsAvatarImg" style="width:80px;height:80px;border-radius:50%;object-fit:cover;display:none;border:2px solid var(--light-gray);">
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="form-label">О себе</label>
+                                <textarea class="form-control" id="settingsBio" rows="4" placeholder="Расскажите о себе, своих кулинарных предпочтениях..."></textarea>
+                            </div>
                             <div class="form-actions">
-                                <button class="btn btn-primary" onclick="saveSettings()">
+                                <button type="submit" class="btn btn-primary" id="settingsSaveBtn">
                                     <i class="fas fa-save"></i> Сохранить изменения
                                 </button>
-                                <button class="btn btn-outline" onclick="resetSettings()">
-                                    <i class="fas fa-redo"></i> Сбросить
-                                </button>
                             </div>
+                        </form>
+                        <div id="settingsMessage" style="margin-top:15px;font-size:0.9rem;display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- Публичные рецепты автора (для чужого профиля — только просмотр) -->
+                <div class="profile-tabs" id="publicTabs" style="display:none;">
+                    <div class="tab-content active">
+                        <div class="tab-header">
+                            <h3 id="publicRecipesTitle">Рецепты автора</h3>
+                        </div>
+                        <!-- Фильтры по категориям -->
+                        <div class="author-filters" id="authorFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+                            <button class="filter-chip active" data-category="all" onclick="filterAuthorRecipes('all', this)">Все</button>
+                        </div>
+                        <div class="recipes-grid" id="authorRecipesList">
+                            <!-- Рецепты автора загрузятся из API -->
+                        </div>
+                        <div class="empty-state" id="authorRecipesEmpty" style="display:none;">
+                            <i class="fas fa-utensils"></i>
+                            <h4>У автора пока нет рецептов</h4>
+                            <p>Загляните позже — возможно, автор скоро опубликует что-то интересное</p>
                         </div>
                     </div>
                 </div>
@@ -261,11 +342,19 @@
             <button class="mobile-menu__close" id="closeMenu"><i class="fas fa-times"></i></button>
         </div>
         <div class="mobile-menu__content">
-            <a href="index.html" class="mobile-menu__link active"><i class="fas fa-home"></i> Главная</a>
-            <a href="favorites.html" class="mobile-menu__link"><i class="fas fa-heart"></i> Избранное</a>
-            <a href="#categories" class="mobile-menu__link"><i class="fas fa-tags"></i> Категории</a>
+            <a href="index.html" class="mobile-menu__link"><i class="fas fa-home"></i> Главная</a>
+            <a href="#" class="mobile-menu__link" onclick="window.goToFavoritesTab(event)"><i class="fas fa-heart"></i> Избранное</a>
+            <a href="#categories" class="mobile-menu__link" id="mobileCategoriesLink"><i class="fas fa-tags"></i> Категории</a>
             <a href="add-recipe.html" class="mobile-menu__link"><i class="fas fa-plus-circle"></i> Добавить рецепт</a>
-            <a href="profile.html" class="mobile-menu__link"><i class="fas fa-user"></i> Профиль</a>
+
+            <!-- Гость: Профиль → login, Войти, Регистрация -->
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+            <a href="registration/login.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-sign-in-alt"></i> Войти</a>
+            <a href="registration/register.html" class="mobile-menu__link guest-only auth-hidden"><i class="fas fa-user-plus"></i> Регистрация</a>
+
+            <!-- Авторизован: Профиль, Выйти(красная) -->
+            <a href="profile.html" class="mobile-menu__link auth-only auth-hidden"><i class="fas fa-user"></i> Профиль</a>
+            <button class="mobile-menu__link auth-only btn-logout-mobile auth-hidden" style="border:none;background:none;width:100%;text-align:left;cursor:pointer;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
@@ -352,27 +441,50 @@
     resetAccordion();
 })();
 
-// Запускаем при загрузке и при изменении размера окна
-window.addEventListener('load', updateCategoriesAccordion);
-window.addEventListener('resize', updateCategoriesAccordion);
-
-
-
-
-
 // ========== ИНИЦИАЛИЗАЦИЯ СТРАНИЦЫ ==========
-document.addEventListener('DOMContentLoaded', function() {
-    initProfilePage();
-});
-
-function initProfilePage() {
+document.addEventListener('DOMContentLoaded', async function() {
     initMobileMenu();
     initBackToTop();
-    loadProfileData();
+    await loadProfileData();
     initProfileTabs();
-    loadUserRecipes();
-    loadFavorites();
-}
+
+    // Проверка параметра ?tab=favorites для открытия вкладки избранного
+    const params = new URLSearchParams(window.location.search);
+    const targetTab = params.get('tab');
+
+    if (targetTab === 'favorites') {
+        window.goToFavoritesTab({ preventDefault: function(){} });
+    }
+});
+
+/**
+ * Открыть вкладку "Избранное" на странице профиля
+ */
+window.goToFavoritesTab = function(e) {
+    e.preventDefault();
+
+    const favBtn = document.querySelector('.tab-btn[data-tab="favorites"]');
+    const favContent = document.getElementById('favorites');
+
+    if (favBtn && favContent) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        favBtn.classList.add('active');
+        favContent.classList.add('active');
+
+        // Обновляем URL без перезагрузки
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'favorites');
+        window.history.replaceState({}, '', url);
+
+        // Подсвечиваем кнопку в навигации
+        document.querySelectorAll('a[href*="tab=favorites"]').forEach(l => l.classList.add('active'));
+        // Убираем подсветку у "Главная"
+        document.querySelectorAll('.nav__link.active').forEach(l => {
+            if (l.getAttribute('href') === 'index.html') l.classList.remove('active');
+        });
+    }
+};
 
 // ========== МОБИЛЬНОЕ МЕНЮ ==========
 function initMobileMenu() {
@@ -424,238 +536,906 @@ function initBackToTop() {
 function initProfileTabs() {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            const tabId = btn.dataset.tab;
+
+            // Если клик по "Избранное" — обновляем URL
+            if (tabId === 'favorites') {
+                const url = new URL(window.location);
+                url.searchParams.set('tab', 'favorites');
+                window.history.replaceState({}, '', url);
+            } else {
+                // Убираем параметр tab для других вкладок
+                const url = new URL(window.location);
+                url.searchParams.delete('tab');
+                window.history.replaceState({}, '', url);
+            }
+
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
-            
+
             btn.classList.add('active');
-            const tabId = btn.dataset.tab;
             document.getElementById(tabId).classList.add('active');
         });
     });
 }
 
-// ========== ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ ==========
-function loadProfileData() {
-    const user = JSON.parse(localStorage.getItem('currentUser')) || {
-        name: 'Мария Иванова',
-        bio: 'Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face'
+// ========== ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ (из API, не localStorage!) ==========
+async function loadProfileData() {
+    const token = localStorage.getItem('token');
+    const profileInfo = document.getElementById('profileInfo');
+    const profileAvatar = document.getElementById('profileAvatar');
+
+    // Скрываем до загрузки
+    if (profileInfo) profileInfo.style.opacity = '0';
+
+    // Проверяем, это свой профиль или чужой (?id=USER_ID)
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewUserId = urlParams.get('id');
+
+    // Скрываем все действия по умолчанию
+    const ownerActions = document.getElementById('ownerActions');
+    const guestActions = document.getElementById('guestActions');
+    if (ownerActions) ownerActions.style.display = 'none';
+    if (guestActions) guestActions.style.display = 'none';
+
+    let data;
+    try {
+        if (viewUserId) {
+            // Чужой профиль (публичный)
+            const headers = {};
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+
+            const response = await fetch(`http://localhost:5000/api/users/${viewUserId}`, { headers });
+            if (!response.ok) {
+                showGuestFallback();
+                return;
+            }
+            data = await response.json();
+        } else if (token) {
+            // Свой профиль
+            const response = await fetch('http://localhost:5000/api/users/me', {
+                headers: { 'Authorization': 'Bearer ' + token },
+            });
+            if (!response.ok) {
+                showGuestFallback();
+                return;
+            }
+            data = await response.json();
+            data.isOwner = true;
+        } else {
+            // Нет токена и нет ?id= — показываем гостевой профиль
+            showGuestFallback();
+            return;
+        }
+    } catch (err) {
+        console.error('[loadProfileData] Ошибка API:', err);
+        showGuestFallback();
+        return;
+    }
+
+    const user = data.user;
+
+    document.getElementById('profileName').textContent = user.username || 'Пользователь';
+    if (profileAvatar) profileAvatar.src = user.avatar_url;
+
+    // "О себе"
+    const bioEl = document.getElementById('profileBio');
+    if (bioEl) {
+        if (user.bio && user.bio.trim()) {
+            bioEl.textContent = user.bio;
+            bioEl.style.display = 'block';
+        } else {
+            bioEl.style.display = 'none';
+        }
+    }
+
+    // Статистика
+    const recipesEl = document.getElementById('recipesCount');
+    if (recipesEl) recipesEl.textContent = (data.recipes || []).length;
+
+    const followersEl = document.getElementById('followersCount');
+    if (followersEl) followersEl.textContent = data.followersCount || 0;
+
+    const followingEl = document.getElementById('followingCount');
+    if (followingEl) followingEl.textContent = data.followingCount || 0;
+
+    const likesEl = document.getElementById('likesCount');
+    if (likesEl) likesEl.textContent = data.totalLikes || 0;
+
+    // Кнопки действий
+    const ownerTabs = document.getElementById('ownerTabs');
+    const publicTabs = document.getElementById('publicTabs');
+
+    if (data.isOwner) {
+        // Свой профиль
+        if (ownerActions) ownerActions.style.display = 'flex';
+        if (ownerTabs) ownerTabs.style.display = 'block';
+        if (publicTabs) publicTabs.style.display = 'none';
+
+        // Загружаем свои рецепты (с кнопками редактирования)
+        if (typeof loadMyRecipes === 'function') loadMyRecipes();
+
+        // Загружаем уведомления о рецептах
+        if (typeof loadRecipeNotifications === 'function') loadRecipeNotifications();
+    } else {
+        // Чужой профиль
+        if (guestActions) guestActions.style.display = 'flex';
+        if (ownerTabs) ownerTabs.style.display = 'none';
+        if (publicTabs) publicTabs.style.display = 'block';
+
+        // Обновляем кнопку подписки
+        const subBtn = document.getElementById('subscribeBtn');
+        if (subBtn) {
+            if (data.isSubscribed) {
+                subBtn.innerHTML = '<i class="fas fa-check"></i> Вы подписаны';
+                subBtn.classList.add('subscribed');
+            } else {
+                subBtn.innerHTML = '<i class="fas fa-user-plus"></i> Подписаться';
+                subBtn.classList.remove('subscribed');
+            }
+        }
+
+        // Загружаем рецепты автора (без кнопок редактирования)
+        loadAuthorRecipes(data.recipes || []);
+    }
+
+    // Показываем профиль
+    if (profileAvatar) profileAvatar.style.opacity = '1';
+    if (profileInfo) profileInfo.style.opacity = '1';
+    const stats = document.getElementById('profileStats');
+    if (stats) stats.style.opacity = '1';
+}
+
+/**
+ * Показать заглушку для гостя
+ */
+function showGuestFallback() {
+    const profileInfo = document.getElementById('profileInfo');
+    const profileAvatar = document.getElementById('profileAvatar');
+    document.getElementById('profileName').textContent = 'Гость';
+    const bioEl = document.getElementById('profileBio');
+    if (bioEl) { bioEl.textContent = ''; bioEl.style.display = 'none'; }
+    document.getElementById('recipesCount').textContent = '0';
+    document.getElementById('favoritesCount').textContent = '0';
+    document.getElementById('likesCount').textContent = '0';
+    if (profileAvatar) {
+        profileAvatar.src = 'https://ui-avatars.com/api/?background=FF6B6B&color=fff&name=G';
+        profileAvatar.style.opacity = '1';
+    }
+    if (profileInfo) profileInfo.style.opacity = '1';
+    const stats = document.getElementById('profileStats');
+    if (stats) stats.style.opacity = '1';
+}
+
+// Глобальная переменная для хранения всех рецептов автора (для фильтрации)
+let _allAuthorRecipes = [];
+// Глобальное хранилище уведомлений о подписках
+let _subscriptionNotifications = [];
+
+/**
+ * Загрузить рецепты чужого автора (без кнопок редактирования/удаления)
+ */
+function loadAuthorRecipes(recipes) {
+    const container = document.getElementById('authorRecipesList');
+    const emptyState = document.getElementById('authorRecipesEmpty');
+    const titleEl = document.getElementById('publicRecipesTitle');
+    const filtersContainer = document.getElementById('authorFilters');
+    if (!container || !emptyState) return;
+
+    const userName = document.getElementById('profileName').textContent;
+    if (titleEl) titleEl.textContent = `Рецепты ${userName}`;
+
+    if (!recipes || recipes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        if (filtersContainer) filtersContainer.style.display = 'none';
+        return;
+    }
+
+    // Сохраняем все рецепты для фильтрации
+    _allAuthorRecipes = recipes;
+
+    // Собираем уникальные категории (фильтруем пустые/некорректные)
+    const categories = new Set();
+    recipes.forEach(r => {
+        const cat = (r.category || '').trim();
+        if (cat && cat.length > 2) {
+            categories.add(cat);
+        }
+    });
+
+    // Создаём кнопки фильтров
+    if (filtersContainer) {
+        filtersContainer.innerHTML = '<button class="filter-chip active" data-category="all" onclick="filterAuthorRecipes(\'all\', this)">Все</button>';
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-chip';
+            btn.dataset.category = cat;
+            btn.textContent = cat;
+            btn.onclick = function() { filterAuthorRecipes(cat, this); };
+            filtersContainer.appendChild(btn);
+        });
+        filtersContainer.style.display = 'flex';
+    }
+
+    // Показываем все рецепты
+    renderAuthorRecipes(recipes);
+}
+
+/**
+ * Отфильтровать рецепты автора по категории
+ */
+window.filterAuthorRecipes = function(category, btnEl) {
+    // Обновляем активную кнопку
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    if (category === 'all') {
+        renderAuthorRecipes(_allAuthorRecipes);
+    } else {
+        const filtered = _allAuthorRecipes.filter(r => r.category === category);
+        renderAuthorRecipes(filtered);
+    }
+};
+
+/**
+ * Отрендерить карточки рецептов автора
+ */
+function renderAuthorRecipes(recipes) {
+    const container = document.getElementById('authorRecipesList');
+    const emptyState = document.getElementById('authorRecipesEmpty');
+    if (!container || !emptyState) return;
+
+    if (recipes.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    container.style.display = 'grid';
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+
+    recipes.forEach(recipe => {
+        container.appendChild(createPublicRecipeCard(recipe));
+    });
+}
+
+/**
+ * Обновить бейдж уведомлений на вкладке "Подписки"
+ */
+function updateNotifBadge() {
+    const badge = document.getElementById('subsTabBadge');
+    if (!badge) return;
+
+    const unreadCount = _subscriptionNotifications.filter(n => !n.read).length;
+
+    if (unreadCount > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+/**
+ * Добавить уведомление о новой подписке
+ */
+function addSubscriptionNotification(username) {
+    _subscriptionNotifications.unshift({
+        id: Date.now(),
+        username: username,
+        action: 'subscribed',
+        time: new Date().toISOString(),
+        read: false,
+    });
+
+    updateNotifBadge();
+    renderNotifications();
+}
+
+/**
+ * Отметить все уведомления как прочитанные
+ */
+function markAllNotifsRead() {
+    _subscriptionNotifications.forEach(n => { n.read = true; });
+    updateNotifBadge();
+}
+
+/**
+ * Загрузить уведомления о новых рецептах от авторов, на которых подписан
+ */
+async function loadRecipeNotifications() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const response = await fetch('http://localhost:5000/api/users/me/recipe-notifications', {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const notifications = data.notifications || [];
+
+        if (notifications.length > 0) {
+            // Обновляем бейдж
+            _subscriptionNotifications = notifications.map(n => ({
+                id: n.id,
+                username: n.author_username,
+                avatarUrl: n.author_avatar_url,
+                recipeId: n.recipe_id,
+                recipeTitle: n.recipe_title,
+                action: 'recipe_created',
+                time: n.created_at,
+                read: false,
+            }));
+            updateNotifBadge();
+            renderNotifications();
+        }
+    } catch (err) {
+        console.error('[loadRecipeNotifications] Ошибка:', err);
+    }
+}
+
+/**
+ * Отрендерить список уведомлений в табе подписок
+ */
+function renderNotifications() {
+    let notifSection = document.getElementById('subscriptionNotifs');
+    if (!notifSection) return;
+
+    const unread = _subscriptionNotifications.filter(n => !n.read);
+
+    if (unread.length === 0) {
+        notifSection.style.display = 'none';
+        return;
+    }
+
+    notifSection.style.display = 'block';
+    notifSection.innerHTML = '';
+
+    const title = document.createElement('h4');
+    title.style.cssText = 'margin:0 0 12px;color:var(--gray-color);font-size:0.9rem;';
+    title.innerHTML = `<i class="fas fa-bell" style="color:var(--primary-color);margin-right:6px;"></i>Новые рецепты от авторов (${unread.length})`;
+    notifSection.appendChild(title);
+
+    unread.forEach(notif => {
+        const item = document.createElement('div');
+        item.className = 'notif-item';
+        item.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;background:white;border-radius:var(--radius-md);margin-bottom:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:all var(--transition-normal);';
+        item.onmouseover = function() { this.style.boxShadow = 'var(--shadow-md)'; };
+        item.onmouseout = function() { this.style.boxShadow = 'var(--shadow-sm)'; };
+        item.onclick = function() {
+            dismissNotif(notif.id);
+            if (notif.recipeId) window.location.href = `recipe-detail.html?id=${notif.recipeId}`;
+        };
+
+        item.innerHTML = `
+            <div style="position:relative;">
+                <img src="${notif.avatarUrl || 'https://ui-avatars.com/api/?background=FF6B6B&color=fff&name=' + (notif.username || 'U')}" alt="${escapeHtml(notif.username)}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">
+                <div style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;background:var(--primary-color);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">
+                    <i class="fas fa-utensils" style="color:white;font-size:0.6rem;"></i>
+                </div>
+            </div>
+            <div style="flex:1;">
+                <strong>${escapeHtml(notif.username)}</strong>
+                <span style="color:var(--gray-color);font-size:0.85rem;"> опубликовал новый рецепт</span>
+                <div style="font-weight:600;color:var(--dark-color);margin-top:4px;font-size:0.9rem;">"${escapeHtml(notif.recipeTitle || 'Рецепт')}"</div>
+                <div style="font-size:0.75rem;color:var(--gray-color);margin-top:4px;">${getTimeAgo(notif.time)}</div>
+            </div>
+            <button onclick="event.stopPropagation(); dismissNotif(${notif.id})" style="background:none;border:none;color:var(--gray-color);cursor:pointer;padding:8px;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        notifSection.appendChild(item);
+    });
+
+    const clearAll = document.createElement('button');
+    clearAll.className = 'btn btn-outline';
+    clearAll.style.cssText = 'margin-top:8px;font-size:0.8rem;padding:6px 12px;width:100%;';
+    clearAll.textContent = 'Отметить все как прочитанные';
+    clearAll.onclick = function() {
+        markAllNotifsRead();
+        renderNotifications();
     };
-    
-    document.getElementById('profileName').textContent = user.name;
-    document.getElementById('profileBio').textContent = user.bio;
-    document.getElementById('profileAvatar').src = user.avatar;
-    
-    const headerAvatar = document.getElementById('headerAvatar');
-    if (headerAvatar) headerAvatar.src = user.avatar;
+    notifSection.appendChild(clearAll);
 }
 
-// ========== ЗАГРУЗКА РЕЦЕПТОВ ПОЛЬЗОВАТЕЛЯ ==========
-function loadUserRecipes() {
-    const recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1 };
-    
-    const userRecipes = recipes.filter(recipe => recipe.author?.id === currentUser.id);
-    const container = document.getElementById('myRecipesList');
-    const emptyState = document.getElementById('myRecipesEmpty');
-    
-    document.getElementById('recipesCount').textContent = userRecipes.length;
-    
-    if (userRecipes.length === 0) {
-        container.style.display = 'none';
-        emptyState.style.display = 'block';
-        return;
-    }
-    
-    container.style.display = 'grid';
-    emptyState.style.display = 'none';
-    container.innerHTML = '';
-    userRecipes.forEach(recipe => {
-        container.appendChild(createRecipeCard(recipe));
-    });
-}
+/**
+ * Убрать одно уведомление
+ */
+window.dismissNotif = function(id) {
+    const notif = _subscriptionNotifications.find(n => n.id === id);
+    if (notif) notif.read = true;
+    updateNotifBadge();
+    renderNotifications();
+};
 
-// ========== ЗАГРУЗКА ИЗБРАННЫХ РЕЦЕПТОВ ==========
-function loadFavorites() {
-    const recipes = JSON.parse(localStorage.getItem('flavorfusion_recipes') || '[]');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { favorites: [] };
-    
-    const favoriteRecipes = recipes.filter(recipe => 
-        currentUser.favorites && currentUser.favorites.includes(recipe.id)
-    );
-    
-    const container = document.getElementById('favoritesList');
-    const emptyState = document.getElementById('favoritesEmpty');
-    
-    document.getElementById('favoritesCount').textContent = favoriteRecipes.length;
-    
-    if (favoriteRecipes.length === 0) {
-        container.style.display = 'none';
-        emptyState.style.display = 'block';
-        return;
-    }
-    
-    container.style.display = 'grid';
-    emptyState.style.display = 'none';
-    container.innerHTML = '';
-    favoriteRecipes.forEach(recipe => {
-        container.appendChild(createRecipeCard(recipe));
-    });
-}
+/**
+ * Создать карточку рецепта чужого автора (без кнопок редактирования)
+ */
+function createPublicRecipeCard(recipe) {
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.dataset.id = recipe.id;
 
-// ========== СОЗДАНИЕ КАРТОЧКИ РЕЦЕПТА ==========
-function createRecipeCard(recipe) {
-    const div = document.createElement('div');
-    div.className = 'recipe-card';
-    div.dataset.id = recipe.id;
-    
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1, favorites: [] };
-    const isFavorite = currentUser.favorites && currentUser.favorites.includes(recipe.id);
-    
-    div.innerHTML = `
+    const avatarUrl = recipe.author_avatar_url || 'https://ui-avatars.com/api/?background=FF6B6B&color=fff&name=' + (recipe.author_username || 'U');
+    const imageUrl = recipe.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop';
+    const badge = recipe.category || 'Рецепт';
+    const rating = (4 + Math.random()).toFixed(1);
+
+    card.innerHTML = `
         <div class="recipe-image">
-            <img src="${recipe.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop'}" alt="${recipe.title}">
-            <span class="recipe-badge">${recipe.category || 'Рецепт'}</span>
+            <img src="${imageUrl}" alt="${escapeHtml(recipe.title)}" loading="lazy">
+            <span class="recipe-badge">${escapeHtml(badge)}</span>
             <div class="recipe-actions">
-                <button class="btn-action btn-favorite ${isFavorite ? 'active' : ''}" data-id="${recipe.id}" onclick="toggleFavorite(${recipe.id})">
+                <button class="btn-action btn-like-feed"
+                        data-id="${recipe.id}"
+                        onclick="event.stopPropagation(); event.preventDefault(); toggleLikeProfile(${recipe.id}, this)"
+                        title="Лайк">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+                <button class="btn-action btn-favorite"
+                        data-id="${recipe.id}"
+                        onclick="event.stopPropagation(); event.preventDefault(); toggleFavoritePublic(${recipe.id}, this)"
+                        title="В избранное">
                     <i class="fas fa-heart"></i>
                 </button>
-                ${recipe.author?.id === currentUser.id ? `
-                <button class="btn-action btn-edit" onclick="editRecipe(${recipe.id})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                ` : ''}
             </div>
         </div>
         <div class="recipe-content">
             <div class="recipe-header">
-                <h3 class="recipe-title">${escapeHtml(recipe.title)}</h3>
+                <div>
+                    <h3 class="recipe-title">${escapeHtml(recipe.title)}</h3>
+                    <div class="recipe-author">
+                        <div class="author-avatar-small">
+                            <img src="${avatarUrl}" alt="${escapeHtml(recipe.author_username)}">
+                        </div>
+                        <a href="profile.html?id=${recipe.author_id}" onclick="event.stopPropagation();">${escapeHtml(recipe.author_username)}</a>
+                    </div>
+                </div>
                 <div class="recipe-rating">
                     <i class="fas fa-star"></i>
-                    <span>${recipe.rating || '4.5'}</span>
+                    <span>${rating}</span>
                 </div>
             </div>
             <p class="recipe-description">${escapeHtml(recipe.description)}</p>
             <div class="recipe-meta">
                 <div class="meta-item">
                     <i class="fas fa-clock"></i>
-                    <span>${recipe.time || '30 мин'}</span>
+                    <span>${escapeHtml(recipe.time)}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-fire"></i>
-                    <span>${recipe.difficulty || 'Средняя'}</span>
+                    <span>${escapeHtml(recipe.difficulty)}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>${recipe.servings || '—'}</span>
                 </div>
             </div>
         </div>
     `;
-    
-    div.addEventListener('click', (e) => {
-        if (!e.target.closest('.recipe-actions')) {
-            window.location.href = `recipe-detail.html?id=${recipe.id}`;
-        }
+
+    card.addEventListener('click', function (e) {
+        if (e.target.closest('.recipe-actions')) return;
+        window.location.href = `recipe-detail.html?id=${recipe.id}`;
     });
-    
-    return div;
+
+    return card;
 }
 
-// ========== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ЗАЩИТЫ ОТ XSS ==========
+/**
+ * Добавление в избранное из публичного профиля
+ */
+window.toggleFavoritePublic = async function(recipeId, btnEl) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'registration/login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:5000/api/recipes/${recipeId}/favorite`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        btnEl.classList.toggle('active', data.action === 'added');
+    } catch (err) {
+        console.error('[toggleFavoritePublic] Ошибка:', err);
+    }
+};
+
+/**
+ * Экранирование HTML
+ */
 function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
+    return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
     });
 }
 
-// ========== ДОБАВЛЕНИЕ/УДАЛЕНИЕ ИЗ ИЗБРАННОГО ==========
-let currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: 1, favorites: [] };
-
-window.toggleFavorite = function(recipeId) {
-    const index = currentUser.favorites.indexOf(recipeId);
-    if (index === -1) {
-        currentUser.favorites.push(recipeId);
-        alert('Добавлено в избранное!');
-    } else {
-        currentUser.favorites.splice(index, 1);
-        alert('Удалено из избранного!');
-    }
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    
-    // Обновляем отображение, если текущая вкладка — избранное
-    const activeTab = document.querySelector('.tab-btn.active');
-    if (activeTab && activeTab.dataset.tab === 'favorites') {
-        loadFavorites();
-    }
-    // Обновляем счётчик избранного
-    document.getElementById('favoritesCount').textContent = currentUser.favorites.length;
-};
-
-// ========== РЕДАКТИРОВАНИЕ РЕЦЕПТА ==========
-window.editRecipe = function(id) {
-    window.location.href = `edit-recipe.html?id=${id}`;
-};
-
-// ========== РЕДАКТИРОВАНИЕ АВАТАРА ==========
+// ========== РЕДАКТИРОВАНИЕ АВАТАРА (переход к настройкам) ==========
 window.editAvatar = function() {
-    alert('Функция изменения аватара будет реализована в будущем обновлении!');
+    editProfile();
 };
 
-// ========== ПЕРЕХОД К НАСТРОЙКАМ ==========
-window.editProfile = function() {
-    const settingsBtn = document.querySelector('.tab-btn[data-tab="settings"]');
-    if (settingsBtn) settingsBtn.click();
+// ========== ПОДПИСКА / ОТПИСКА ==========
+window.toggleSubscribe = async function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'registration/login.html';
+        return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const followingId = urlParams.get('id');
+    if (!followingId) return;
+
+    const subBtn = document.getElementById('subscribeBtn');
+    if (!subBtn) return;
+
+    try {
+        const response = await fetch(`http://localhost:5000/api/users/me/subscribe/${followingId}`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            alert(errData.error || 'Ошибка');
+            return;
+        }
+
+        const data = await response.json();
+        const authorName = document.getElementById('profileName').textContent;
+
+        if (data.action === 'subscribed') {
+            subBtn.innerHTML = '<i class="fas fa-check"></i> Вы подписаны';
+            subBtn.classList.add('subscribed');
+
+            // Обновляем счётчик подписчиков
+            const followersEl = document.getElementById('followersCount');
+            if (followersEl) followersEl.textContent = parseInt(followersEl.textContent) + 1;
+
+            // Уведомление
+            showToast(`Вы подписались на ${authorName}`);
+
+            // Добавляем в уведомления (для демо — в localStorage)
+            addSubscriptionNotification(authorName);
+        } else {
+            subBtn.innerHTML = '<i class="fas fa-user-plus"></i> Подписаться';
+            subBtn.classList.remove('subscribed');
+
+            // Обновляем счётчик подписчиков
+            const followersEl = document.getElementById('followersCount');
+            if (followersEl) followersEl.textContent = Math.max(0, parseInt(followersEl.textContent) - 1);
+
+            showToast(`Вы отписались от ${authorName}`);
+        }
+    } catch (err) {
+        console.error('[toggleSubscribe] Ошибка:', err);
+        alert('Ошибка сети');
+    }
 };
+
+// ========== ПЕРЕХОД К НАСТРОЙКАМ (редактирование профиля) ==========
+window.editProfile = function() {
+    console.log('[editProfile] Кнопка нажата!');
+
+    // Переключаемся на вкладку настроек
+    const settingsBtn = document.querySelector('.tab-btn[data-tab="settings"]');
+    if (!settingsBtn) {
+        console.error('[editProfile] Кнопка настроек не найдена!');
+        return;
+    }
+
+    // Активируем вкладку
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    settingsBtn.classList.add('active');
+    const settingsTab = document.getElementById('settings');
+    if (settingsTab) settingsTab.classList.add('active');
+    console.log('[editProfile] Вкладка настроек активирована');
+
+    // Загружаем данные профиля в форму (из API)
+    loadProfileToSettings();
+};
+
+/**
+ * Загрузить данные профиля в форму настроек из API
+ */
+async function loadProfileToSettings() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.log('[loadProfileToSettings] Токен не найден — пользователь не авторизован');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:5000/api/users/me', {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+
+        if (!response.ok) {
+            console.error('[loadProfileToSettings] Ошибка API:', response.status);
+            return;
+        }
+
+        const data = await response.json();
+        const user = data.user;
+        console.log('[loadProfileToSettings] Данные получены:', user);
+
+        const usernameInput = document.getElementById('settingsUsername');
+        const emailInput = document.getElementById('settingsEmail');
+        const avatarInput = document.getElementById('settingsAvatar');
+        const bioInput = document.getElementById('settingsBio');
+        const avatarImg = document.getElementById('settingsAvatarImg');
+
+        if (usernameInput) usernameInput.value = user.username || '';
+        if (emailInput) emailInput.value = user.email || '';
+        if (avatarInput) avatarInput.value = user.avatar_url || '';
+        if (bioInput) bioInput.value = user.bio || '';
+
+        // Превью аватара
+        if (avatarImg && user.avatar_url && user.avatar_url.length > 0) {
+            avatarImg.src = user.avatar_url;
+            avatarImg.style.display = 'block';
+        }
+    } catch (err) {
+        console.error('[loadProfileToSettings] Ошибка сети:', err);
+    }
+}
 
 // ========== ПОДЕЛИТЬСЯ ПРОФИЛЕМ ==========
 window.shareProfile = function() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Мой профиль на FlavorFusion',
-            text: 'Посмотрите мой профиль на FlavorFusion!',
-            url: window.location.href
+    const url = window.location.href;
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Ссылка на профиль скопирована!');
+        }).catch(() => {
+            showToast('Не удалось скопировать ссылку');
         });
     } else {
-        navigator.clipboard.writeText(window.location.href)
-            .then(() => alert('Ссылка на профиль скопирована!'))
-            .catch(() => alert('Скопируйте ссылку: ' + window.location.href));
+        // Фоллбэк для старых браузеров
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showToast('Ссылка на профиль скопирована!');
+        } catch {
+            showToast('Не удалось скопировать ссылку');
+        }
+        document.body.removeChild(textarea);
     }
 };
 
-// ========== СОХРАНЕНИЕ НАСТРОЕК ==========
-window.saveSettings = function() {
-    const name = document.querySelector('.settings-form input[type="text"]').value.trim();
-    const bio = document.querySelector('.settings-form textarea').value.trim();
-    
-    if (!name) {
-        alert('Имя не может быть пустым');
+/**
+ * Показать всплывающее уведомление (Toast)
+ */
+function showToast(message) {
+    // Удаляем предыдущий toast если есть
+    const existing = document.getElementById('shareToast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'shareToast';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: var(--dark-color, #2D3436);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        z-index: 10000;
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    `;
+    document.body.appendChild(toast);
+
+    // Анимация появления
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    // Автоматическое скрытие
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+};
+
+// ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ: ФОРМА ==========
+
+// Переключатель метода аватара
+window.switchAvatarMethod = function(method) {
+    const linkBtn = document.getElementById('avatarLinkBtn');
+    const fileBtn = document.getElementById('avatarFileBtn');
+    const linkSection = document.getElementById('avatarLinkSection');
+    const fileSection = document.getElementById('avatarFileSection');
+
+    if (method === 'link') {
+        if (linkBtn) linkBtn.classList.add('active');
+        if (fileBtn) fileBtn.classList.remove('active');
+        if (linkSection) linkSection.style.display = 'block';
+        if (fileSection) fileSection.style.display = 'none';
+    } else {
+        if (fileBtn) fileBtn.classList.add('active');
+        if (linkBtn) linkBtn.classList.remove('active');
+        if (fileSection) fileSection.style.display = 'block';
+        if (linkSection) linkSection.style.display = 'none';
+    }
+};
+
+// Обработка загрузки файла аватара
+let avatarFileDataUrl = null;
+window.handleAvatarFile = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        alert('Выберите изображение');
         return;
     }
-    
-    const user = JSON.parse(localStorage.getItem('currentUser')) || {};
-    user.name = name;
-    user.bio = bio; 
-    
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    
-    // Обновляем отображение профиля
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileBio').textContent = bio;
-    
-    alert('Настройки сохранены!');
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Файл слишком большой. Максимум 5 МБ');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        avatarFileDataUrl = e.target.result;
+        const fileNameEl = document.getElementById('avatarFileName');
+        if (fileNameEl) fileNameEl.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' КБ)';
+        const avatarImg = document.getElementById('settingsAvatarImg');
+        if (avatarImg) {
+            avatarImg.src = avatarFileDataUrl;
+            avatarImg.style.display = 'block';
+        }
+    };
+    reader.readAsDataURL(file);
 };
 
-// ========== СБРОС НАСТРОЕК ==========
-window.resetSettings = function() {
-    if (confirm('Вы уверены, что хотите сбросить настройки к значениям по умолчанию?')) {
-        document.querySelector('.settings-form input[type="text"]').value = 'Мария Иванова';
-        document.querySelector('.settings-form input[type="email"]').value = 'maria@example.com';
-        document.querySelector('.settings-form textarea').value = 'Люблю готовить и экспериментировать на кухне. Особенно обожаю итальянскую кухню и десерты.';
+// Превью аватара при вводе URL
+(function() {
+    const avatarInput = document.getElementById('settingsAvatar');
+    if (avatarInput) {
+        avatarInput.addEventListener('input', function() {
+            const avatarImg = document.getElementById('settingsAvatarImg');
+            if (avatarImg) {
+                if (this.value.trim()) {
+                    avatarImg.src = this.value.trim();
+                    avatarImg.style.display = 'block';
+                } else {
+                    avatarImg.style.display = 'none';
+                }
+            }
+        });
     }
-};
-</script>   
+})();
+
+// Сабмит формы настроек
+(function() {
+    const form = document.getElementById('settingsForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Войдите в систему');
+            return;
+        }
+
+        const username = document.getElementById('settingsUsername').value.trim();
+        const bio = document.getElementById('settingsBio').value.trim();
+
+        // Определяем avatar_url: приоритет файлу, затем ссылке
+        let avatar_url = '';
+        if (avatarFileDataUrl) {
+            avatar_url = avatarFileDataUrl; // загруженный файл (base64)
+        } else {
+            const avatarInput = document.getElementById('settingsAvatar');
+            avatar_url = avatarInput ? avatarInput.value.trim() : '';
+        }
+
+        if (username.length < 3) {
+            alert('Имя должно быть минимум 3 символа');
+            return;
+        }
+
+        const saveBtn = document.getElementById('settingsSaveBtn');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сохранение...';
+        saveBtn.disabled = true;
+
+        try {
+            const payload = { username };
+            if (avatar_url.length > 0) payload.avatar_url = avatar_url;
+            if (bio.length > 0) payload.bio = bio;
+
+            const response = await fetch('http://localhost:5000/api/users/me', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Ошибка сохранения');
+
+            const user = data.user;
+
+            // Обновить шапку
+            document.querySelectorAll('#nav-avatar').forEach(img => {
+                img.src = user.avatar_url;
+                img.alt = user.username;
+            });
+            document.querySelectorAll('#nav-username').forEach(el => {
+                el.textContent = user.username;
+            });
+
+            // Обновить профиль на странице
+            const profileName = document.getElementById('profileName');
+            if (profileName) profileName.textContent = user.username;
+
+            const profileBio = document.getElementById('profileBio');
+            if (profileBio) {
+                if (user.bio && user.bio.trim()) {
+                    profileBio.textContent = user.bio;
+                    profileBio.style.display = 'block';
+                } else {
+                    profileBio.style.display = 'none';
+                }
+            }
+
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (profileAvatar) profileAvatar.src = user.avatar_url;
+
+            const profileInfo = document.getElementById('profileInfo');
+            if (profileInfo) profileInfo.style.opacity = '1';
+            const stats = document.getElementById('profileStats');
+            if (stats) stats.style.opacity = '1';
+
+            const msgEl = document.getElementById('settingsMessage');
+            if (msgEl) {
+                msgEl.textContent = 'Профиль обновлён!';
+                msgEl.style.display = 'block';
+                msgEl.style.color = 'var(--success-color, #00B894)';
+                setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+            }
+        } catch (err) {
+            alert(err.message || 'Не удалось сохранить');
+        } finally {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    });
+})();
+</script>
+
+<!-- Проверка авторизации -->
+<script src="js/auth-check.js" defer></script>
+<!-- Рецепты в профиле (мои рецепты + избранное) -->
+<script src="js/profile-recipes.js" defer></script>
 </html>
