@@ -160,20 +160,28 @@ const Recipe = {
   },
 
   /**
-   * Обновить рецепт (только автор может)
+   * Обновить рецепт (автор или админ может)
    * Partial update — обновляются только переданные поля
    * @param {number} recipeId
    * @param {number} authorId
    * @param {object} data — поля для обновления
+   * @param {boolean} isAdmin — флаг администратора
    * @returns {object|null} обновлённый рецепт или null
    */
-  async updateById(recipeId, authorId, data) {
-    // Проверяем что рецепт существует и принадлежит автору
+  async updateById(recipeId, authorId, data, isAdmin = false) {
+    // Проверяем что рецепт существует
     const checkResult = await pool.query(
-      'SELECT id FROM recipes WHERE id = $1 AND author_id = $2',
-      [recipeId, authorId]
+      'SELECT id, author_id FROM recipes WHERE id = $1',
+      [recipeId]
     );
     if (checkResult.rows.length === 0) return null;
+
+    const recipeAuthorId = checkResult.rows[0].author_id;
+
+    // Проверяем права: автор ИЛИ админ
+    if (!isAdmin && recipeAuthorId !== authorId) {
+      return null;
+    }
 
     // Формируем динамический UPDATE
     const fields = [];
@@ -263,9 +271,23 @@ const Recipe = {
   },
 
   /**
-   * Удалить рецепт (только автор может)
+   * Удалить рецепт (автор или админ может)
+   * @param {number} id
+   * @param {number} authorId
+   * @param {boolean} isAdmin — флаг администратора
+   * @returns {boolean}
    */
-  async deleteById(id, authorId) {
+  async deleteById(id, authorId, isAdmin = false) {
+    // Если админ — удаляем без проверки авторства
+    if (isAdmin) {
+      const result = await pool.query(
+        'DELETE FROM recipes WHERE id = $1 RETURNING id',
+        [id]
+      );
+      return result.rows.length > 0;
+    }
+    
+    // Иначе проверяем что это автор
     const result = await pool.query(
       'DELETE FROM recipes WHERE id = $1 AND author_id = $2 RETURNING id',
       [id, authorId]

@@ -11,16 +11,35 @@ async function seed() {
     // Создаем тестового пользователя если нет
     const passwordHash = await bcrypt.hash('test12345', 10);
     const userResult = await pool.query(
-      `INSERT INTO users (username, email, password_hash, avatar_url, bio)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO users (username, email, password_hash, avatar_url, bio, role, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (email) DO UPDATE SET username = EXCLUDED.username
        RETURNING id, username`,
       ['test_1', 'test1@example.com', passwordHash,
        'https://ui-avatars.com/api/?background=FF6B6B&color=fff&name=test',
-       'Люблю готовить итальянскую кухню!']
+       'Люблю готовить итальянскую кухню!', 'user', 'active']
     );
     const userId = userResult.rows[0].id;
     console.log(`✅ Пользователь: ${userResult.rows[0].username} (id: ${userId})`);
+
+    // Создаем администратора если нет
+    const adminPasswordHash = await bcrypt.hash('admin12345', 10);
+    const adminResult = await pool.query(
+      `INSERT INTO users (username, email, password_hash, avatar_url, bio, role, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (email) DO NOTHING
+       RETURNING id, username, role`,
+      ['admin', 'admin@flavorfusion.com', adminPasswordHash,
+       'https://ui-avatars.com/api/?background=4ECDC4&color=fff&name=Admin',
+       'Администратор платформы FlavorFusion', 'admin', 'active']
+    );
+    if (adminResult.rows.length > 0) {
+      console.log(`👑 Админ создан: ${adminResult.rows[0].username} (id: ${adminResult.rows[0].id}, роль: ${adminResult.rows[0].role})`);
+      console.log(`   Email: admin@flavorfusion.com`);
+      console.log(`   Пароль: admin12345`);
+    } else {
+      console.log(`ℹ️  Админ уже существует`);
+    }
 
     // Тестовые рецепты
     const recipes = [

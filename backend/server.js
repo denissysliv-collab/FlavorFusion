@@ -37,6 +37,9 @@ app.use('/api/users', require('./routes/users'));
 // Публичные и защищённые маршруты рецептов
 app.use('/api/recipes', require('./routes/recipes'));
 
+// Административные маршруты (защищены authorizeAdmin)
+app.use('/api/admin', require('./routes/admin'));
+
 // Проверка здоровья сервера
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
