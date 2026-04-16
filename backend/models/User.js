@@ -19,17 +19,18 @@ const User = {
    * @param {string} username
    * @param {string} email
    * @param {string} password
+   * @param {string} role - роль пользователя (по умолчанию 'user')
    * @returns {object} созданный пользователь (без password_hash)
    */
-  async create({ username, email, password }) {
+  async create({ username, email, password, role = 'user' }) {
     // Хешируем пароль (10 раундов salt)
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (username, email, password_hash)
-       VALUES ($1, $2, $3)
-       RETURNING id, username, email, avatar_url, bio, created_at`,
-      [username, email, passwordHash]
+      `INSERT INTO users (username, email, password_hash, role)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, username, email, avatar_url, bio, role, status, created_at`,
+      [username, email, passwordHash, role]
     );
 
     return result.rows[0];
@@ -51,7 +52,7 @@ const User = {
    */
   async findById(id) {
     const result = await pool.query(
-      `SELECT id, username, email, avatar_url, bio, created_at, updated_at
+      `SELECT id, username, email, avatar_url, bio, role, status, created_at, updated_at
        FROM users WHERE id = $1`,
       [id]
     );
@@ -95,7 +96,7 @@ const User = {
       `UPDATE users
        SET ${fields.join(', ')}
        WHERE id = $${paramIndex}
-       RETURNING id, username, email, avatar_url, bio, updated_at`,
+       RETURNING id, username, email, avatar_url, bio, role, status, updated_at`,
       values
     );
 

@@ -161,12 +161,15 @@ const recipeController = {
 
   /**
    * PATCH /api/recipes/:id
-   * Защищённый: обновить СВОЙ рецепт
+   * Защищённый: обновить рецепт (автор или админ)
    * Передаются только те поля, которые нужно изменить
    */
   async updateRecipe(req, res, next) {
     try {
-      const updated = await Recipe.updateById(req.params.id, req.user.id, req.body);
+      // Проверяем является ли пользователь админом
+      const isAdmin = req.user && req.user.role === 'admin';
+      
+      const updated = await Recipe.updateById(req.params.id, req.user.id, req.body, isAdmin);
       if (!updated) {
         return res.status(404).json({
           error: 'Рецепт не найден или у вас нет прав на его редактирование',
@@ -186,7 +189,7 @@ const recipeController = {
 
   /**
    * DELETE /api/recipes/:id
-   * Защищённый: удалить СВОЙ рецепт
+   * Защищённый: удалить рецепт (автор или админ)
    */
   async deleteRecipe(req, res, next) {
     try {
@@ -194,7 +197,10 @@ const recipeController = {
       const recipe = await Recipe.findById(req.params.id);
       const title = recipe ? recipe.title : 'Рецепт';
 
-      const deleted = await Recipe.deleteById(req.params.id, req.user.id);
+      // Проверяем является ли пользователь админом
+      const isAdmin = req.user && req.user.role === 'admin';
+
+      const deleted = await Recipe.deleteById(req.params.id, req.user.id, isAdmin);
       if (!deleted) {
         return res.status(404).json({
           error: 'Рецепт не найден или у вас нет прав на его удаление',

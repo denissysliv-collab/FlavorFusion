@@ -32,8 +32,8 @@ const authController = {
         return res.status(409).json({ error: 'Этот email уже зарегистрирован' });
       }
 
-      // Создаём пользователя
-      const user = await User.create({ username, email, password });
+      // Создаём пользователя (роль по умолчанию 'user')
+      const user = await User.create({ username, email, password, role: 'user' });
 
       // Генерируем токен
       const token = generateToken(user);
@@ -47,6 +47,8 @@ const authController = {
           email: user.email,
           avatar_url: user.avatar_url,
           bio: user.bio,
+          role: user.role,
+          status: user.status,
         },
       });
     } catch (err) {
@@ -81,6 +83,11 @@ const authController = {
         return res.status(401).json({ error: 'Неверный email или пароль' });
       }
 
+      // Проверяем статус
+      if (user.status === 'banned') {
+        return res.status(403).json({ error: 'Ваш аккаунт заблокирован' });
+      }
+
       // Генерируем токен
       const token = generateToken(user);
 
@@ -93,6 +100,8 @@ const authController = {
           email: user.email,
           avatar_url: user.avatar_url,
           bio: user.bio,
+          role: user.role,
+          status: user.status,
         },
       });
     } catch (err) {
